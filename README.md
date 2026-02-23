@@ -1,7 +1,6 @@
 # ⚡ Engineering Workstation Setup
 
 > Minimal. Intentional. Production-ready.  
-> Full-stack · Mobile · Blockchain · AI · Java · .NET — optimized for Apple Silicon with 8GB RAM.
 
 ---
 

@@ -2,8 +2,6 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║                    Engineering Workstation Setup                 ║
 # ║              Minimal · Intentional · Production-Ready            ║
-# ║                                                                  ║
-# ║  Merged: Claude + ChatGPT + Gemini + Your additions             ║
 # ╚══════════════════════════════════════════════════════════════════╝
 # Usage: chmod +x setup.sh && ./setup.sh
 
