@@ -1,7 +1,8 @@
-# ⚡ M2 MacBook Air — Engineering Workstation
+# Engineering Workstation
 
 > Minimal. Intentional. Production-ready.  
 > A complete dev environment for full-stack, mobile, blockchain, and AI development — optimized for Apple Silicon with 8GB RAM.
+
 ---
 
 ## Quick Start
@@ -29,18 +30,18 @@ dev-setup/
 
 ## Stack
 
-| Layer | Tools |
-|---|---|
-| **Shell** | Zsh · Oh My Zsh · Starship · iTerm2 · tmux |
-| **Package Manager** | Homebrew (ARM-native `/opt/homebrew`) |
-| **Runtime** | NVM · Node LTS · Python 3.12 (brew) · Anaconda or Miniforge |
-| **Web** | Next.js · React · Tailwind · Express · Firebase · Hardhat |
-| **Mobile** | Flutter · React Native · Android Studio · Swift/Xcode |
-| **AI / ML** | PyTorch (MPS) · TensorFlow Metal · Transformers · LangChain · OpenAI SDK |
-| **Local LLM** | Ollama · phi3:mini · tinyllama · nomic-embed-text · deepseek-coder:1.3b |
-| **Database** | MongoDB (manual-start only) |
-| **Containers** | Docker (2GB RAM hard cap) |
-| **Editors** | Cursor · VS Code |
+| Layer               | Tools                                                                    |
+| ------------------- | ------------------------------------------------------------------------ |
+| **Shell**           | Zsh · Oh My Zsh · Starship · iTerm2 · tmux                               |
+| **Package Manager** | Homebrew (ARM-native `/opt/homebrew`)                                    |
+| **Runtime**         | NVM · Node LTS · Python 3.12 (brew) · Anaconda or Miniforge              |
+| **Web**             | Next.js · React · Tailwind · Express · Firebase · Hardhat                |
+| **Mobile**          | Flutter · React Native · Android Studio · Swift/Xcode                    |
+| **AI / ML**         | PyTorch (MPS) · TensorFlow Metal · Transformers · LangChain · OpenAI SDK |
+| **Local LLM**       | Ollama · phi3:mini · tinyllama · nomic-embed-text · deepseek-coder:1.3b  |
+| **Database**        | MongoDB (manual-start only)                                              |
+| **Containers**      | Docker (2GB RAM hard cap)                                                |
+| **Editors**         | Cursor · VS Code                                                         |
 
 ---
 
@@ -58,18 +59,21 @@ dev-setup/
 The installer has 16 sections, all optional and resumable. Completed steps are tracked in `~/.devsetup_state` — re-running the script never repeats finished work.
 
 ```
+
   ╔══════════════════════════════════════════════════════════╗
-  ║     M2 MacBook Air — Engineering Workstation Setup       ║
-  ║     Merged: Claude +  + Gemini — Best of All      ║
+  ║                                                          ║
+  ║             Engineering Workstation Setup                ║
+  ║        Minimal · Intentional · Production-Ready          ║
+  ║                                                          ║
   ╚══════════════════════════════════════════════════════════╝
 
-  Installation Menu
-  ✔ 01 · Homebrew + Core CLI Tools (incl. tmux)
-  ✔ 02 · Zsh + Oh My Zsh + iTerm2
-  ○ 03 · NVM + Node LTS + Global Packages
-  ...
+  Fully interactive — choose exactly what to install.
+  Completed steps are saved and never repeated.
 
-  [A] Install All    [Q] Quit    [01-16] Jump to section
+  ⚠  Estimated time: 20–45 min depending on internet speed
+  ⚠  Keep your laptop plugged in during setup
+
+  ? Ready to begin? [Y/n]:
 ```
 
 ---
@@ -81,22 +85,22 @@ Created automatically at `~/Developer/` — merged layout from all three scripts
 ```
 ~/Developer/
 ├── web/
-│   ├── next/              # Next.js apps      
-│   └── express/           # Express APIs        
+│   ├── next/              # Next.js apps
+│   └── express/           # Express APIs
 ├── mobile/
-│   ├── flutter/           # Flutter projects     
-│   ├── react-native/      # RN projects          
+│   ├── flutter/           # Flutter projects
+│   ├── react-native/      # RN projects
 │   └── swift/             # iOS / Swift
 ├── blockchain/            # Hardhat, Solidity
 ├── ai/                    # Python ML, LangChain
 ├── scripts/               # Automation
-├── creative/              # Writing, AI poetry    
-├── labs/                  # Experiments & R&D     
-├── work/                  # Client / job projects 
+├── creative/              # Writing, AI poetry
+├── labs/                  # Experiments & R&D
+├── work/                  # Client / job projects
 ├── university/            # Coursework, notebooks
-├── ops/                   # DevOps, infra         
+├── ops/                   # DevOps, infra
 ├── experiments/           # Hackathon prototypes
-├── archive/               # Old projects          
+├── archive/               # Old projects
 ├── .data/
 │   └── mongodb/           # Manual MongoDB data dir
 ├── .envs/
@@ -109,13 +113,13 @@ Created automatically at `~/Developer/` — merged layout from all three scripts
 
 ## Ollama Models
 
-| Model | Size | Source | Use Case |
-|---|---|---|---|
-| `phi3:mini` | 2.3 GB | Claude | Daily reasoning, chat, LangChain |
-| `tinyllama` | 0.6 GB | Claude | Ultra-fast prototyping |
-| `nomic-embed-text` | 0.3 GB | Claude | Embeddings, RAG pipelines |
-| `deepseek-coder:1.3b` | 0.8 GB | **Gemini** | Lightweight code assistant |
-| `codellama:7b` | 4.8 GB | Claude | Full code model — run alone |
+| Model                 | Size   | Use Case                         |
+| --------------------- | ------ | -------------------------------- |
+| `phi3:mini`           | 2.3 GB | Daily reasoning, chat, LangChain |
+| `tinyllama`           | 0.6 GB | Ultra-fast prototyping           |
+| `nomic-embed-text`    | 0.3 GB | Embeddings, RAG pipelines        |
+| `deepseek-coder:1.3b` | 0.8 GB | Lightweight code assistant       |
+| `codellama:7b`        | 4.8 GB | Full code model — run alone      |
 
 ```bash
 ollamaup                      # start server
@@ -139,16 +143,16 @@ ll           # eza -la with icons + git status
 nrd          # npm run dev
 
 # ── Services (start manually, stop when done) ───
-mongoup      # Start MongoDB via dbpath         (Claude)
-mongodown    # Stop MongoDB via dbpath          (Claude)
-start-mongo  # Start MongoDB via config file    (Gemini)
-stop-mongo   # pkill mongod — fast kill         (Gemini)
+mongoup      # Start MongoDB via dbpath
+mongodown    # Stop MongoDB via dbpath
+start-mongo  # Start MongoDB via config file
+stop-mongo   # pkill mongod — fast kill
 ollamaup     # Start Ollama server
 
 # ── System Maintenance ───────────────────────────
-cleanup      # Clear Xcode DerivedData + npm cache  (Gemini)
-l-gpu        # Real-time GPU/RAM pressure monitor   (Gemini)
-memcheck     # Swap usage + memory pressure         (Claude)
+cleanup      # Clear Xcode DerivedData + npm cache
+l-gpu        # Real-time GPU/RAM pressure monitor
+memcheck     # Swap usage + memory pressure
 
 # ── Shell ────────────────────────────────────────
 zconf        # Edit ~/.zshrc in Cursor
@@ -161,13 +165,13 @@ zreload      # Reload shell config
 
 The script now offers a choice — Miniforge is the new recommended default:
 
-| | Anaconda | Miniforge |
-|---|---|---|
-| Install size | ~3 GB | ~200 MB |
-| ARM-native | ✔ (via manual download) | ✔ (via brew cask) |
-| Package source | Anaconda defaults | conda-forge |
-| Automation | Manual download only | `brew install --cask miniforge` |
-| **Recommended** | | **✔** |
+|                 | Anaconda                | Miniforge                       |
+| --------------- | ----------------------- | ------------------------------- |
+| Install size    | ~3 GB                   | ~200 MB                         |
+| ARM-native      | ✔ (via manual download) | ✔ (via brew cask)               |
+| Package source  | Anaconda defaults       | conda-forge                     |
+| Automation      | Manual download only    | `brew install --cask miniforge` |
+| **Recommended** |                         | **✔**                           |
 
 Both create the same `conda activate ai` environment with identical AI/ML libraries.
 
@@ -175,13 +179,13 @@ Both create the same `conda activate ai` environment with identical AI/ML librar
 
 ## Memory Guide
 
-| State | Expected RAM |
-|---|---|
-| Idle desktop | < 3 GB |
-| Next.js dev server | < 5 GB |
-| Ollama phi3:mini + Node | < 6 GB |
-| Ollama + Docker (2GB cap) | < 7.5 GB |
-| ⚠️ Swap territory | > 7.5 GB |
+| State                     | Expected RAM |
+| ------------------------- | ------------ |
+| Idle desktop              | < 3 GB       |
+| Next.js dev server        | < 5 GB       |
+| Ollama phi3:mini + Node   | < 6 GB       |
+| Ollama + Docker (2GB cap) | < 7.5 GB     |
+| ⚠️ Swap territory         | > 7.5 GB     |
 
 **Never run simultaneously:** `codellama:7b` + Docker + Android Emulator.  
 **Check pressure:** `memcheck` or `l-gpu` aliases.
@@ -205,12 +209,6 @@ python3 -c "import torch; print('MPS:', torch.backends.mps.is_available())"
 
 ---
 
-## Reference Docs
-
-Full setup guide with annotated commands, config explanations, and deployment workflows: [`m2-devenv-setup.md`](./m2-devenv-setup.md)
-
----
-
 ## Requirements
 
 - MacBook with Apple Silicon (M1/M2/M3/M4)
@@ -219,6 +217,3 @@ Full setup guide with annotated commands, config explanations, and deployment wo
 - ~30 GB free disk space before starting
 
 ---
-
-*Built for M2 · 8GB · 256GB — every decision intentional.*  
-*Merged from Claude +  + Gemini. The best script wins.*
