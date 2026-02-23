@@ -2,6 +2,8 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║                    Engineering Workstation Setup                 ║
 # ║              Minimal · Intentional · Production-Ready            ║
+# ║                                                                  ║
+# ║  Merged: Claude + ChatGPT + Gemini + Your additions             ║
 # ╚══════════════════════════════════════════════════════════════════╝
 # Usage: chmod +x setup.sh && ./setup.sh
 
@@ -170,7 +172,7 @@ show_menu() {
   clear
   echo ""
   echo -e "${BOLD}${CYAN}  Installation Menu${RESET}"
-  echo -e "${DIM}  ✔ = done  ○ = pending  |  [A] All  [Q] Quit  [01-16] Jump${RESET}"
+  echo -e "${DIM}  ✔ = done  ○ = pending  |  [A] All  [Q] Quit  [01-18] Jump${RESET}"
   echo ""
 
   local sections=(
@@ -182,14 +184,16 @@ show_menu() {
     "mongodb"   "06 · MongoDB (manual-start only)"
     "docker"    "07 · Docker (2GB RAM cap)"
     "ollama"    "08 · Ollama + Lightweight LLM Models"
-    "mobile"    "09 · Mobile Dev (Flutter, React Native)"
-    "editors"   "10 · Cursor + VS Code"
+    "mobile"    "09 · Mobile Dev (Flutter, React Native, Expo)"
+    "editors"   "10 · Cursor + VS Code + Google Antigravity"
     "apps"      "11 · Productivity Apps"
     "git"       "12 · Git + GitHub + SSH"
     "folders"   "13 · Developer Folder Structure"
     "zshrc"     "14 · Write ~/.zshrc (all aliases + tools)"
     "starship"  "15 · Starship Prompt Config"
     "cleanup"   "16 · Brew Cleanup + System Tidy"
+    "javanet"   "17 · Java + .NET + JSP Tools (Maven, Gradle, Tomcat)"
+    "openclaw"  "18 · OpenClaw — Free Claude Code Alternative"
   )
 
   for (( i=0; i<${#sections[@]}; i+=2 )); do
@@ -218,7 +222,6 @@ install_homebrew() {
   else
     log_step "Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # Write to zprofile so brew is available in login shells too
     echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
   fi
 
@@ -250,8 +253,6 @@ install_homebrew() {
   fi
 
   "$(brew --prefix)/opt/fzf/install" --all --no-bash --no-fish &>/dev/null || true
-
-  # brew cleanup — run after every install block
   run_quiet "Running brew cleanup" brew cleanup
 
   mark_done "homebrew"
@@ -347,16 +348,15 @@ install_node() {
 # 04 · PYTHON + CONDA
 # ─────────────────────────────────────────────────
 install_python() {
-  log_header "04 · Python 3.12 + Conda AI Environment"
+  log_header "04 · Python + Conda AI Environment"
   is_done "python" && { log_skip "Already configured"; return; }
 
-  # ── Standalone Python 3.12 via brew ──
-  # Useful for scripts and lightweight tools without the full conda overhead
+  # ── Standalone Python via brew (lightweight, for scripts) ──
   if brew list python &>/dev/null; then
     log_success "Python (brew) already installed"
   else
     if confirm "Install Python via Homebrew (lightweight, for scripts/tools)?"; then
-      run_quiet "Installing python latest version" brew install python
+      run_quiet "Installing python" brew install python
     fi
   fi
 
@@ -377,12 +377,12 @@ install_python() {
       1)
         log_step "Installing Anaconda (full, ~3GB)..."
         run_quiet "Installing Anaconda" brew install anaconda
-        log_success "Anaconda installed — includes many pre-built ML packages"
+        log_success "Anaconda installed"
         ;;
       2)
-        log_step "Installing Miniforge (ARM-native, community conda)..."
+        log_step "Installing Miniforge (ARM-native, ~200MB)..."
         run_quiet "Installing Miniforge" brew install --cask miniforge
-        log_success "Miniforge installed — smaller and fully ARM-native"
+        log_success "Miniforge installed"
         ;;
       s|S)
         log_skip "Conda"
@@ -396,7 +396,6 @@ install_python() {
     run_quiet "Updating conda base" conda update -n base conda --yes
   fi
 
-  # ── Create and populate AI environment ──
   if conda env list 2>/dev/null | grep -q "^ai "; then
     log_success "Conda 'ai' environment already exists"
   else
@@ -478,10 +477,9 @@ install_mongodb() {
     run_quiet "Installing MongoDB Community" brew install mongodb-community
   fi
 
-  # Explicitly prevent auto-start (critical for 8GB RAM)
   brew services stop mongodb-community &>/dev/null || true
   log_success "MongoDB installed — NOT auto-started"
-  log_info "  Use aliases: 'mongoup' to start, 'stop-mongo' to kill"
+  log_info "  Use: 'mongoup' to start · 'stop-mongo' to kill"
 
   mkdir -p "$HOME/Developer/.data/mongodb"
   log_success "Data dir: ~/Developer/.data/mongodb"
@@ -571,7 +569,7 @@ install_ollama() {
   esac
 
   kill "$OLLAMA_PID" &>/dev/null || true
-  log_info "Ollama stopped — use 'ollamaup' alias when you need it"
+  log_info "Ollama stopped — use 'ollamaup' alias when needed"
 
   mark_done "ollama"
   section_done
@@ -579,17 +577,20 @@ install_ollama() {
 
 # ─────────────────────────────────────────────────
 # 09 · MOBILE DEV
+# Added: Expo CLI for React Native + managed workflow
 # ─────────────────────────────────────────────────
 install_mobile() {
-  log_header "09 · Mobile Dev (Flutter, React Native)"
+  log_header "09 · Mobile Dev (Flutter, React Native, Expo)"
   is_done "mobile" && { log_skip "Already configured"; return; }
 
+  # Watchman — required by React Native Metro bundler
   if brew list watchman &>/dev/null; then
     log_success "Watchman already installed"
   else
     run_quiet "Installing Watchman" brew install watchman
   fi
 
+  # Flutter
   if command -v flutter &>/dev/null; then
     log_success "Flutter: $(flutter --version 2>/dev/null | head -1)"
   else
@@ -599,6 +600,7 @@ install_mobile() {
     }
   fi
 
+  # Android Studio
   if brew list --cask android-studio &>/dev/null; then
     log_success "Android Studio already installed"
   else
@@ -608,9 +610,29 @@ install_mobile() {
     }
   fi
 
+  # React Native CLI
   confirm "Install React Native CLI?" && {
     run_quiet "Installing React Native CLI" npm install -g react-native-cli
   }
+
+  # ── Expo — new addition ──
+  # Expo is the standard managed workflow for React Native (snack, EAS, OTA updates)
+  echo ""
+  echo -e "${DIM}  Expo gives you: Expo Go app, EAS Build, OTA updates, and a managed"
+  echo -e "  workflow so you don't need to touch Xcode/Android Studio for most projects.${RESET}"
+  echo ""
+  if npm list -g @expo/cli &>/dev/null; then
+    log_success "Expo CLI already installed"
+  else
+    confirm "Install Expo CLI (@expo/cli)?" && {
+      run_quiet "Installing Expo CLI" npm install -g @expo/cli
+      run_quiet "Installing EAS CLI (Expo build service)" npm install -g eas-cli
+      log_success "Expo CLI ready"
+      log_info "  Create a project: npx create-expo-app@latest MyApp"
+      log_info "  Start dev server: npx expo start"
+      log_info "  Build for stores: eas build --platform all"
+    }
+  fi
 
   log_info "Xcode: install via the Mac App Store for iOS development"
 
@@ -620,11 +642,13 @@ install_mobile() {
 
 # ─────────────────────────────────────────────────
 # 10 · EDITORS
+# Added: Google Antigravity (AI IDE)
 # ─────────────────────────────────────────────────
 install_editors() {
-  log_header "10 · Cursor + VS Code +  Google Antigravity"
+  log_header "10 · Cursor + VS Code + Google Antigravity"
   is_done "editors" && { log_skip "Already installed"; return; }
 
+  # Cursor — primary editor
   confirm "Install Cursor (primary AI-first editor)?" && {
     if ! brew list --cask cursor &>/dev/null; then
       run_quiet "Installing Cursor" brew install --cask cursor
@@ -633,6 +657,7 @@ install_editors() {
     fi
   }
 
+  # VS Code — fallback
   confirm "Install VS Code (fallback / pair sessions)?" && {
     if ! brew list --cask visual-studio-code &>/dev/null; then
       run_quiet "Installing VS Code" brew install --cask visual-studio-code
@@ -641,14 +666,23 @@ install_editors() {
     fi
   }
 
-  confirm "Install  Google Antigravity (Secondary AI IDE)?" && {
+  # Google Antigravity — AI IDE
+  echo ""
+  echo -e "${DIM}  Google Antigravity is Google's AI-native IDE (secondary AI editor).${RESET}"
+  confirm "Install Google Antigravity?" && {
     if ! brew list --cask antigravity &>/dev/null; then
       run_quiet "Installing Google Antigravity" brew install --cask antigravity
+      if [[ $? -ne 0 ]]; then
+        log_warn "brew cask 'antigravity' not found — may need manual install."
+        log_info "  → Check: https://antigravity.dev for the latest download"
+        confirm "Open Antigravity website?" && open "https://antigravity.dev"
+      fi
     else
       log_success "Google Antigravity already installed"
     fi
-  } 
+  }
 
+  # VS Code Extensions
   if command -v code &>/dev/null && confirm "Install recommended VS Code extensions?"; then
     local extensions=(
       dbaeumer.vscode-eslint
@@ -666,6 +700,7 @@ install_editors() {
     done
   fi
 
+  # VS Code settings
   local vscode_settings="$HOME/Library/Application Support/Code/User/settings.json"
   if [[ ! -f "$vscode_settings" ]] && command -v code &>/dev/null; then
     mkdir -p "$(dirname "$vscode_settings")"
@@ -702,6 +737,7 @@ SETTINGS
 
 # ─────────────────────────────────────────────────
 # 11 · PRODUCTIVITY APPS
+# Added: Stremio, Roblox (removed Rectangle/HiddenBar — kept lean)
 # ─────────────────────────────────────────────────
 install_apps() {
   log_header "11 · Productivity Apps"
@@ -714,9 +750,10 @@ install_apps() {
     "brave-browser|Brave — Privacy-first browser"
     "google-chrome|Chrome — DevTools / testing"
     "raycast|Raycast — Spotlight replacement"
+    "rectangle|Rectangle — Window tiling"
+    "hiddenbar|HiddenBar — Menubar cleaner"
     "stremio|Stremio — Media streaming"
     "roblox|Roblox — Gaming platform"
-
   )
 
   local to_install=()
@@ -809,30 +846,26 @@ install_folders() {
   is_done "folders" && { log_skip "Already created"; return; }
 
   local dirs=(
-    # Web
     "$HOME/Developer/web"
     "$HOME/Developer/web/next"
     "$HOME/Developer/web/express"
-    # Mobile
     "$HOME/Developer/mobile"
     "$HOME/Developer/mobile/flutter"
     "$HOME/Developer/mobile/react-native"
+    "$HOME/Developer/mobile/expo"
     "$HOME/Developer/mobile/swift"
-    # Core dev
     "$HOME/Developer/blockchain"
     "$HOME/Developer/ai"
     "$HOME/Developer/scripts"
-    # Creative + learning
     "$HOME/Developer/creative"
     "$HOME/Developer/labs"
-    # Context-based 
     "$HOME/Developer/work"
     "$HOME/Developer/university"
     "$HOME/Developer/ops"
-    # Scratch + archive
     "$HOME/Developer/experiments"
     "$HOME/Developer/archive"
-    # Infrastructure
+    "$HOME/Developer/java"
+    "$HOME/Developer/dotnet"
     "$HOME/Developer/.data/mongodb"
     "$HOME/Developer/.envs"
     "$HOME/Developer/.templates"
@@ -930,11 +963,23 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # ─────────────────────────────────────────────────
 # NVM — Node Version Manager
-# ChatGPT: explicit NVM_DIR export before sourcing
 # ─────────────────────────────────────────────────
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# ─────────────────────────────────────────────────
+# JAVA — OpenJDK via Temurin
+# JAVA_HOME set to latest installed JDK
+# ─────────────────────────────────────────────────
+export JAVA_HOME=$(/usr/libexec/java_home 2>/dev/null || echo "")
+[[ -n "$JAVA_HOME" ]] && export PATH="$JAVA_HOME/bin:$PATH"
+
+# ─────────────────────────────────────────────────
+# .NET SDK
+# ─────────────────────────────────────────────────
+export DOTNET_ROOT="/usr/local/share/dotnet"
+export PATH="$DOTNET_ROOT:$HOME/.dotnet/tools:$PATH"
 
 # ─────────────────────────────────────────────────
 # ANDROID / FLUTTER
@@ -945,7 +990,7 @@ export FLUTTER_HOME="$HOME/Developer/flutter"
 export PATH="$FLUTTER_HOME/bin:$PATH"
 
 # ─────────────────────────────────────────────────
-# OLLAMA — Gemini: bind to localhost explicitly
+# OLLAMA — bind to localhost explicitly
 # ─────────────────────────────────────────────────
 export OLLAMA_HOST=127.0.0.1
 
@@ -975,41 +1020,45 @@ alias nr="npm run"
 alias nrd="npm run dev"
 alias nrb="npm run build"
 
+# ── Expo ──
+alias exs="npx expo start"
+alias exb="eas build --platform all"
+alias exa="npx expo start --android"
+alias exi="npx expo start --ios"
+
 # ── Python ──
 alias py="python3"
 alias pip="pip3"
 
+# ── Java ──
+alias jv="java -version"
+alias mvnw="./mvnw"
+alias gw="./gradlew"
+
+# ── .NET ──
+alias dn="dotnet"
+alias dnr="dotnet run"
+alias dnb="dotnet build"
+alias dnt="dotnet test"
+alias dnn="dotnet new"
+
 # ─────────────────────────────────────────────────
 # ALIASES — Services (manual-start only)
 # ─────────────────────────────────────────────────
-
-# MongoDB — two styles for different situations:
-# Claude: path-based (explicit, always works)
 alias mongoup="mongod --dbpath ~/Developer/.data/mongodb"
 alias mongodown="mongod --dbpath ~/Developer/.data/mongodb --shutdown"
-# Gemini: config-based + pkill (faster for quick kill)
 alias start-mongo="mongod --config /opt/homebrew/etc/mongod.conf"
 alias stop-mongo="pkill mongod"
 
-# Ollama — Gemini: OLLAMA_HOST set globally above
 alias ollamaup="ollama serve"
-
-# Docker
 alias dstats="docker stats --no-stream"
 
 # ─────────────────────────────────────────────────
 # ALIASES — System Maintenance
 # ─────────────────────────────────────────────────
-
-# Gemini: clear Xcode junk + npm cache in one shot
-alias cleanup="rm -rf ~/Library/Developer/Xcode/DerivedData/* && npm cache clean --force && echo '✔ Cleaned Xcode DerivedData + npm cache'"
-
-# Gemini: GPU/RAM pressure monitor — run while Ollama or PyTorch is active
+alias cleanup="rm -rf ~/Library/Developer/Xcode/DerivedData/* && npm cache clean --force && echo '✔ Cleaned'"
 alias l-gpu="top -u -s 5"
-
-# Claude: swap + memory pressure check
 alias memcheck="sysctl vm.swapusage && memory_pressure"
-
 alias ip="ipconfig getifaddr en0"
 alias zreload="source ~/.zshrc"
 alias zconf="cursor ~/.zshrc"
@@ -1021,18 +1070,16 @@ eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
 eval "$(fzf --zsh)"
 
-# History
 HISTSIZE=10000
 SAVEHIST=10000
 setopt HIST_IGNORE_DUPS
 setopt SHARE_HISTORY
 
-# FZF
 export FZF_DEFAULT_COMMAND="fd --type f --hidden --exclude .git"
 export FZF_DEFAULT_OPTS="--height 40% --border --layout=reverse"
 ZSHRC
 
-  log_success "~/.zshrc written — includes aliases from all three scripts"
+  log_success "~/.zshrc written"
   mark_done "zshrc"
   section_done
 }
@@ -1047,7 +1094,7 @@ install_starship_config() {
   mkdir -p "$HOME/.config"
   cat > "$HOME/.config/starship.toml" << 'STARSHIP'
 format = """
-$directory$git_branch$git_status$nodejs$python$conda$cmd_duration
+$directory$git_branch$git_status$nodejs$python$conda$java$dotnet$cmd_duration
 $character"""
 
 [character]
@@ -1079,13 +1126,21 @@ pyenv_version_name = true
 style = "bold green"
 symbol = "🐍 "
 
+[java]
+style = "bold red"
+symbol = " "
+
+[dotnet]
+style = "bold blue"
+symbol = "󰪮 "
+
 [cmd_duration]
 min_time = 2000
 style = "bold yellow"
 format = "took [$duration]($style) "
 STARSHIP
 
-  log_success "Starship config written to ~/.config/starship.toml"
+  log_success "Starship config written (Java + .NET modules added)"
   mark_done "starship"
   section_done
 }
@@ -1118,6 +1173,142 @@ install_cleanup() {
 }
 
 # ─────────────────────────────────────────────────
+# 17 · JAVA + .NET + JSP TOOLS
+# New section — covers enterprise/backend stack
+# ─────────────────────────────────────────────────
+install_javanet() {
+  log_header "17 · Java + .NET + JSP Tools"
+  is_done "javanet" && { log_skip "Already configured"; return; }
+
+  echo ""
+  echo -e "${DIM}  This section installs:${RESET}"
+  echo -e "  Java (Temurin OpenJDK 21 LTS) + Maven + Gradle"
+  echo -e "  .NET SDK (latest LTS)"
+  echo -e "  Apache Tomcat (JSP / Servlet container)"
+  echo ""
+
+  # ── Java (Temurin = most compatible ARM-native OpenJDK) ──
+  if command -v java &>/dev/null; then
+    log_success "Java already installed: $(java -version 2>&1 | head -1)"
+  else
+    if confirm "Install Java 21 LTS (Temurin OpenJDK)?"; then
+      brew tap homebrew/cask-versions &>/dev/null || true
+      run_quiet "Installing Temurin JDK 21" brew install --cask temurin@21
+      log_success "Java 21 (Temurin) installed"
+      log_info "  JAVA_HOME is auto-set in ~/.zshrc via /usr/libexec/java_home"
+    fi
+  fi
+
+  # ── Maven (JSP / Spring Boot build tool) ──
+  if brew list maven &>/dev/null; then
+    log_success "Maven already installed: $(mvn -v 2>/dev/null | head -1)"
+  else
+    if confirm "Install Apache Maven (build tool for Java/JSP projects)?"; then
+      run_quiet "Installing Maven" brew install maven
+      log_info "  Usage: mvn spring-boot:run · mvn package · mvn test"
+    fi
+  fi
+
+  # ── Gradle (Android + Kotlin + Spring alternative) ──
+  if brew list gradle &>/dev/null; then
+    log_success "Gradle already installed: $(gradle -v 2>/dev/null | head -1)"
+  else
+    if confirm "Install Gradle (alternative build tool — used by Android + Kotlin)?"; then
+      run_quiet "Installing Gradle" brew install gradle
+    fi
+  fi
+
+  # ── Apache Tomcat (JSP Servlet container) ──
+  echo ""
+  echo -e "${DIM}  Tomcat is needed to run JSP/Servlet apps locally."
+  echo -e "  Installed manually-start only — no auto-launch.${RESET}"
+  echo ""
+  if brew list tomcat &>/dev/null; then
+    log_success "Tomcat already installed"
+  else
+    if confirm "Install Apache Tomcat (JSP/Servlet container)?"; then
+      run_quiet "Installing Tomcat" brew install tomcat
+      log_success "Tomcat installed"
+      log_info "  Start: catalina run"
+      log_info "  Deploy WAR: copy to \$(brew --prefix)/opt/tomcat/libexec/webapps/"
+      log_info "  Access: http://localhost:8080"
+    fi
+  fi
+
+  # ── .NET SDK ──
+  echo ""
+  if command -v dotnet &>/dev/null; then
+    log_success ".NET SDK already installed: $(dotnet --version)"
+  else
+    if confirm "Install .NET SDK (latest LTS)?"; then
+      run_quiet "Installing .NET SDK" brew install --cask dotnet-sdk
+      log_success ".NET SDK installed"
+      log_info "  Create app:   dotnet new webapi -n MyApi"
+      log_info "  Run:          dotnet run"
+      log_info "  Build:        dotnet build"
+      log_info "  Test:         dotnet test"
+    fi
+  fi
+
+  # ── Quick verification ──
+  echo ""
+  log_step "Environment check..."
+  command -v java   &>/dev/null && log_success "  java   $(java -version 2>&1 | awk -F '"' '/version/ {print $2}')"
+  command -v mvn    &>/dev/null && log_success "  maven  $(mvn -v 2>/dev/null | awk 'NR==1{print $3}')"
+  command -v gradle &>/dev/null && log_success "  gradle $(gradle -v 2>/dev/null | awk '/Gradle/{print $2}')"
+  command -v dotnet &>/dev/null && log_success "  dotnet $(dotnet --version 2>/dev/null)"
+
+  mark_done "javanet"
+  section_done
+}
+
+# ─────────────────────────────────────────────────
+# 18 · OPENCLAW — Free Claude Code Alternative
+# ─────────────────────────────────────────────────
+install_openclaw() {
+  log_header "18 · OpenClaw — Free Claude Code Alternative"
+  is_done "openclaw" && { log_skip "Already installed"; return; }
+
+  echo ""
+  echo -e "${DIM}  OpenClaw is a free, open-source alternative to Claude Code."
+  echo -e "  It provides an agentic coding CLI experience powered by local"
+  echo -e "  or remote LLMs — pairs well with Ollama.${RESET}"
+  echo ""
+
+  if ! confirm "Install OpenClaw?"; then
+    log_skip "OpenClaw"
+    return
+  fi
+
+  # Try brew cask first — if it fails, fall back to manual instructions
+  if brew install --cask openclaw &>/dev/null; then
+    log_success "OpenClaw installed via Homebrew"
+  else
+    log_warn "Homebrew cask not found — trying npm install..."
+    if npm install -g openclaw &>/dev/null; then
+      log_success "OpenClaw installed via npm"
+    else
+      log_warn "Could not auto-install OpenClaw."
+      echo ""
+      echo -e "${DIM}  Manual options:${RESET}"
+      echo -e "  ${CYAN}Option A)${RESET} Check https://github.com/openclaw/openclaw for latest install"
+      echo -e "  ${CYAN}Option B)${RESET} Use Open Interpreter (similar free alternative):"
+      echo -e "           pip install open-interpreter"
+      echo -e "           interpreter"
+      echo ""
+      confirm "Install Open Interpreter (fallback)?" && {
+        conda run -n ai pip install open-interpreter &>/dev/null && \
+          log_success "Open Interpreter installed in 'ai' conda env" || \
+          log_error "Failed — run manually: pip install open-interpreter"
+      }
+    fi
+  fi
+
+  mark_done "openclaw"
+  section_done
+}
+
+# ─────────────────────────────────────────────────
 # SUMMARY SCREEN
 # ─────────────────────────────────────────────────
 show_summary() {
@@ -1135,19 +1326,21 @@ show_summary() {
     "homebrew|Homebrew + Core CLI (incl. tmux)"
     "zsh|Zsh + Oh My Zsh + iTerm2"
     "node|NVM + Node LTS + Global Packages"
-    "python|Python 3.12 + Conda (Anaconda or Miniforge) + AI Libs"
-    "webdev|Firebase CLI + Hardhat Starter"
+    "python|Python + Conda AI Environment"
+    "webdev|Firebase CLI + Hardhat"
     "mongodb|MongoDB (manual-start)"
     "docker|Docker Desktop (2GB cap)"
-    "ollama|Ollama + LLM Models (incl. deepseek-coder)"
-    "mobile|Flutter + Android Studio + React Native"
-    "editors|Cursor + VS Code"
-    "apps|Productivity Apps"
+    "ollama|Ollama + LLM Models"
+    "mobile|Flutter + React Native + Expo"
+    "editors|Cursor + VS Code + Google Antigravity"
+    "apps|Productivity Apps (incl. Stremio, Roblox)"
     "git|Git + SSH + GitHub CLI"
-    "folders|Developer Folder Structure (merged layout)"
-    "zshrc|~/.zshrc (aliases from all 3 scripts)"
-    "starship|Starship Prompt"
+    "folders|Developer Folder Structure"
+    "zshrc|~/.zshrc (all aliases)"
+    "starship|Starship Prompt (Java + .NET modules)"
     "cleanup|Brew Cleanup + System Tidy"
+    "javanet|Java 21 + Maven + Gradle + Tomcat + .NET SDK"
+    "openclaw|OpenClaw — Free Claude Code Alternative"
   )
 
   for entry in "${sections[@]}"; do
@@ -1162,23 +1355,33 @@ show_summary() {
   echo ""
   echo -e "${BOLD}${CYAN}  Next Steps:${RESET}"
   echo -e "${DIM}"
-  echo "  1. Reopen iTerm2 — or run: source ~/.zshrc"
-  echo "  2. Docker: Settings → Resources → Memory → 2 GB"
-  echo "  3. SSH key: already on clipboard → github.com/settings/keys"
-  echo "  4. Android Studio: SDK Manager → Android 14 (API 34)"
-  echo "  5. Flutter: run 'flutter doctor' and follow remaining prompts"
-  echo "  6. AI env: conda activate ai"
-  echo "     Verify MPS: python3 -c \"import torch; print(torch.backends.mps.is_available())\""
+  echo "  1.  Reopen iTerm2 — or run: source ~/.zshrc"
+  echo "  2.  Docker: Settings → Resources → Memory → 2 GB"
+  echo "  3.  SSH key: already on clipboard → github.com/settings/keys"
+  echo "  4.  Android Studio: SDK Manager → Android 14 (API 34)"
+  echo "  5.  Flutter: run 'flutter doctor' and follow remaining prompts"
+  echo "  6.  AI env: conda activate ai"
+  echo "      MPS check: python3 -c \"import torch; print(torch.backends.mps.is_available())\""
+  echo "  7.  Java: java -version · mvn -v · gradle -v"
+  echo "  8.  .NET: dotnet --version · dotnet new webapi -n MyApi"
+  echo "  9.  JSP: catalina run → http://localhost:8080"
+  echo "  10. Expo: npx create-expo-app@latest MyApp → npx expo start"
   echo -e "${RESET}"
-  echo -e "${BOLD}  Aliases from the merged build:${RESET}"
-  echo -e "  ${CYAN}cleanup${RESET}      Clear Xcode junk + npm cache"
-  echo -e "  ${CYAN}l-gpu${RESET}        Monitor GPU/RAM pressure "
-  echo -e "  ${CYAN}memcheck${RESET}     Swap usage + memory pressure "
-  echo -e "  ${CYAN}stop-mongo${RESET}   Quick pkill MongoDB "
-  echo -e "  ${CYAN}start-mongo${RESET}  Config-based MongoDB start "
-  echo -e "  ${CYAN}mongoup${RESET}      Path-based MongoDB start "
-  echo -e "  ${CYAN}ollamaup${RESET}     Start Ollama server"
-  echo -e "  ${CYAN}dev${RESET}          cd ~/Developer"
+
+  echo -e "${BOLD}  Full alias list:${RESET}"
+  echo -e "  ${CYAN}dev${RESET}         cd ~/Developer"
+  echo -e "  ${CYAN}ll${RESET}          eza -la with git status"
+  echo -e "  ${CYAN}nrd${RESET}         npm run dev"
+  echo -e "  ${CYAN}exs / exa / exi${RESET}  Expo start / android / ios"
+  echo -e "  ${CYAN}dn / dnr / dnb${RESET}   dotnet / run / build"
+  echo -e "  ${CYAN}mvnw / gw${RESET}   Maven/Gradle wrapper shortcuts"
+  echo -e "  ${CYAN}mongoup${RESET}     Start MongoDB (path-based)"
+  echo -e "  ${CYAN}stop-mongo${RESET}  Kill MongoDB (pkill)"
+  echo -e "  ${CYAN}ollamaup${RESET}    Start Ollama LLM server"
+  echo -e "  ${CYAN}cleanup${RESET}     Clear Xcode DerivedData + npm cache"
+  echo -e "  ${CYAN}l-gpu${RESET}       Monitor GPU/RAM pressure"
+  echo -e "  ${CYAN}memcheck${RESET}    Swap + memory pressure"
+  echo -e "  ${CYAN}zconf${RESET}       Edit ~/.zshrc in Cursor"
   echo ""
   echo -e "${GREEN}${BOLD}  Your workstation is ready. Ship something great. ❯${RESET}"
   echo ""
@@ -1204,6 +1407,8 @@ install_all() {
   write_zshrc
   install_starship_config
   install_cleanup
+  install_javanet
+  install_openclaw
 }
 
 # ─────────────────────────────────────────────────
@@ -1237,6 +1442,8 @@ main() {
       "14") write_zshrc ;;
       "15") install_starship_config ;;
       "16") install_cleanup ;;
+      "17") install_javanet ;;
+      "18") install_openclaw ;;
       *)
         log_warn "Unknown option: $MENU_CHOICE"
         sleep 1
