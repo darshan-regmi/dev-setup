@@ -2,8 +2,6 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║                    Engineering Workstation Setup                 ║
 # ║              Minimal · Intentional · Production-Ready            ║
-# ║                                                                  ║
-# ║  Merged: Claude + ChatGPT + Gemini + Your additions             ║
 # ╚══════════════════════════════════════════════════════════════════╝
 # Usage: chmod +x setup.sh && ./setup.sh
 
@@ -578,7 +576,6 @@ install_ollama() {
 
 # ─────────────────────────────────────────────────
 # 09 · MOBILE DEV
-# Added: Expo CLI for React Native + managed workflow
 # ─────────────────────────────────────────────────
 install_mobile() {
   log_header "09 · Mobile Dev (Flutter, React Native, Expo)"
@@ -616,7 +613,6 @@ install_mobile() {
     run_quiet "Installing React Native CLI" npm install -g react-native-cli
   }
 
-  # ── Expo — new addition ──
   # Expo is the standard managed workflow for React Native (snack, EAS, OTA updates)
   echo ""
   echo -e "${DIM}  Expo gives you: Expo Go app, EAS Build, OTA updates, and a managed"
@@ -643,7 +639,6 @@ install_mobile() {
 
 # ─────────────────────────────────────────────────
 # 10 · EDITORS
-# Added: Google Antigravity (AI IDE)
 # ─────────────────────────────────────────────────
 install_editors() {
   log_header "10 · Cursor + VS Code + Google Antigravity"
@@ -738,7 +733,6 @@ SETTINGS
 
 # ─────────────────────────────────────────────────
 # 11 · PRODUCTIVITY APPS
-# Added: Stremio, Roblox (removed Rectangle/HiddenBar — kept lean)
 # ─────────────────────────────────────────────────
 install_apps() {
   log_header "11 · Productivity Apps"
@@ -751,7 +745,7 @@ install_apps() {
     "brave-browser|Brave — Privacy-first browser"
     "google-chrome|Chrome — DevTools / testing"
     "raycast|Raycast — Spotlight replacement"
-    "rectangle|Rectangle — Window tiling"
+    "microsoft-office|Microsoft Office — Productivity suite"
     "hiddenbar|HiddenBar — Menubar cleaner"
     "stremio|Stremio — Media streaming"
     "roblox|Roblox — Gaming platform"

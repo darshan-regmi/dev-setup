@@ -92,7 +92,7 @@ dev-setup/
 | 08 | Ollama | phi3:mini · tinyllama · nomic-embed-text · deepseek-coder:1.3b · codellama:7b |
 | 09 | Mobile Dev | Flutter · Android Studio · React Native CLI · Expo CLI · EAS CLI · Watchman |
 | 10 | Editors | Cursor · VS Code + 9 extensions + settings.json · Google Antigravity |
-| 11 | Productivity Apps | Notion · Spotify · Discord · Brave · Chrome · Raycast · Rectangle · HiddenBar · Stremio · Roblox |
+| 11 | Productivity Apps | Notion · Spotify · Discord · Brave · Chrome · Raycast · Microsoft Office · HiddenBar · Stremio · Roblox |
 | 12 | Git + SSH | Global git config · SSH keygen (ed25519) · clipboard copy · GitHub CLI auth |
 | 13 | Folder Structure | Full `~/Developer/` layout — 20 directories incl. java/ dotnet/ mobile/expo/ |
 | 14 | ~/.zshrc | All aliases + PATH exports for every tool in this stack |
