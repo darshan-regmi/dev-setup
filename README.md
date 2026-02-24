@@ -1,6 +1,7 @@
 # ⚡ Engineering Workstation Setup
 
 > Minimal. Intentional. Production-ready.  
+> Full-stack · Mobile · Blockchain · AI · Java · .NET — optimized for Apple Silicon with 8GB RAM.
 
 ---
 
@@ -40,7 +41,7 @@ dev-setup/
 | **Mobile** | Flutter · React Native · **Expo + EAS** · Android Studio · Swift/Xcode |
 | **Java / JSP** | Temurin JDK 21 LTS · Maven · Gradle · Apache Tomcat |
 | **.NET** | .NET SDK (latest LTS) |
-| **Database** | MongoDB (manual-start only) |
+| **Database** | MongoDB (manual-start) · **MySQL (manual-start)** |
 | **Containers** | Docker (2GB RAM hard cap) |
 | **Editors** | Cursor · VS Code · Google Antigravity |
 | **Agentic Coding** | OpenClaw (free Claude Code alternative) |
@@ -77,28 +78,79 @@ dev-setup/
 
 ---
 
-## All 18 Sections
+## All 19 Sections
 
 | # | Section | What Gets Installed |
 |---|---|---|
-| 01 | Homebrew + Core CLI | brew · git · gh · bat · eza · fd · ripgrep · fzf · zoxide · starship · **tmux** · tldr · JetBrains Mono NF |
-| 02 | Zsh + iTerm2 | Oh My Zsh · autosuggestions · syntax-highlighting · completions |
-| 03 | NVM + Node LTS | nvm (curl) · Node LTS · pnpm · yarn · typescript · ts-node · firebase-tools |
-| 04 | Python + Conda | brew python · **Anaconda or Miniforge** (your choice) · full AI/ML stack in `conda ai` env |
-| 05 | Web Dev | Firebase CLI · Hardhat starter project |
-| 06 | MongoDB | mongodb-community · manual-start only · Compass (optional) |
+| 01 | Homebrew + Core CLI | brew · git · gh · bat · eza · fd · ripgrep · fzf · zoxide · starship · tmux · tldr · JetBrains Mono NF |
+| 02 | Zsh + iTerm2 | Oh My Zsh · zsh-autosuggestions · zsh-syntax-highlighting · zsh-completions |
+| 03 | NVM + Node LTS | nvm (via curl) · Node LTS · pnpm · yarn · typescript · ts-node · firebase-tools |
+| 04 | Python + Conda | brew python · Anaconda or Miniforge (your choice) · full AI/ML stack in `conda ai` env |
+| 05 | Web Dev | Firebase CLI · Hardhat starter project with toolbox |
+| 06 | MongoDB | mongodb-community · manual-start only · MongoDB Compass (optional) |
 | 07 | Docker | Docker Desktop · 2GB RAM cap reminder |
-| 08 | Ollama | phi3:mini · tinyllama · nomic-embed-text · **deepseek-coder:1.3b** · codellama:7b |
-| 09 | Mobile Dev | Flutter · Android Studio · React Native · **Expo CLI + EAS CLI** |
-| 10 | Editors | Cursor · VS Code + extensions + settings · **Google Antigravity** |
-| 11 | Productivity Apps | Notion · Spotify · Discord · Brave · Chrome · Raycast · Rectangle · HiddenBar · **Stremio · Roblox** |
-| 12 | Git + SSH | Global git config · SSH keygen · clipboard copy · GitHub CLI auth |
-| 13 | Folder Structure | Full `~/Developer/` layout incl. `java/` · `dotnet/` · `mobile/expo/` |
-| 14 | ~/.zshrc | All aliases + PATH exports (Java · .NET · Expo · Ollama · MongoDB · system tools) |
-| 15 | Starship Prompt | Prompt with Node · Python · Conda · **Java · .NET** modules |
-| 16 | Cleanup | brew · conda · npm · Xcode DerivedData |
-| **17** | **Java + .NET + JSP** | **Temurin JDK 21 · Maven · Gradle · Apache Tomcat · .NET SDK** |
-| **18** | **OpenClaw** | **Free Claude Code alternative — brew → npm → Open Interpreter fallback** |
+| 08 | Ollama | phi3:mini · tinyllama · nomic-embed-text · deepseek-coder:1.3b · codellama:7b |
+| 09 | Mobile Dev | Flutter · Android Studio · React Native CLI · Expo CLI · EAS CLI · Watchman |
+| 10 | Editors | Cursor · VS Code + 9 extensions + settings.json · Google Antigravity |
+| 11 | Productivity Apps | Notion · Spotify · Discord · Brave · Chrome · Raycast · Rectangle · HiddenBar · Stremio · Roblox |
+| 12 | Git + SSH | Global git config · SSH keygen (ed25519) · clipboard copy · GitHub CLI auth |
+| 13 | Folder Structure | Full `~/Developer/` layout — 20 directories incl. java/ dotnet/ mobile/expo/ |
+| 14 | ~/.zshrc | All aliases + PATH exports for every tool in this stack |
+| 15 | Starship Prompt | Prompt with Node · Python · Conda · Java · .NET modules |
+| 16 | Cleanup | brew cleanup · conda clean · npm cache · Xcode DerivedData |
+| 17 | Java + .NET + JSP | Temurin JDK 21 · Apache Maven · Gradle · Apache Tomcat · .NET SDK |
+| 18 | OpenClaw | Free Claude Code alternative — brew → npm → Open Interpreter fallback chain |
+| **19** | **MySQL** | **mysql · mysql-shell (optional) · TablePlus GUI · first-time setup guide** |
+
+---
+
+## Everything This Script Can Install
+
+A complete flat list — every tool, app, and package across all 19 sections.
+
+### 🔧 CLI & Shell
+`brew` · `git` · `gh` · `wget` · `curl` · `jq` · `tree` · `htop` · `bat` · `eza` · `fd` · `ripgrep` · `fzf` · `zoxide` · `starship` · `tmux` · `tldr` · `JetBrains Mono Nerd Font`
+
+### 🐚 Terminal
+`iTerm2` · `Oh My Zsh` · `zsh-autosuggestions` · `zsh-syntax-highlighting` · `zsh-completions`
+
+### 🟢 JavaScript / Node
+`nvm` · `Node LTS` · `npm` · `pnpm` · `yarn` · `typescript` · `ts-node` · `firebase-tools`
+
+### 🐍 Python / AI
+`python@3.12` (brew) · `Anaconda` or `Miniforge` · `torch` · `torchvision` · `torchaudio` · `tensorflow-metal` · `tensorflow-macos` · `transformers` · `datasets` · `accelerate` · `langchain` · `langchain-community` · `langchain-openai` · `openai` · `anthropic` · `jupyterlab` · `notebook` · `ipywidgets` · `pandas` · `numpy` · `scipy` · `matplotlib` · `seaborn` · `scikit-learn` · `huggingface_hub` · `python-dotenv`
+
+### 🤖 Local LLMs (Ollama)
+`ollama` · `phi3:mini` · `tinyllama` · `nomic-embed-text` · `deepseek-coder:1.3b` · `codellama:7b`
+
+### 🌐 Web Dev
+`firebase-tools` · `hardhat` · `@nomicfoundation/hardhat-toolbox`
+
+### 📱 Mobile Dev
+`Flutter` · `Android Studio` · `react-native-cli` · `@expo/cli` · `eas-cli` · `watchman`
+
+### ☕ Java / JSP / Enterprise
+`temurin@21` (OpenJDK) · `maven` · `gradle` · `tomcat`
+
+### 💜 .NET
+`.NET SDK` (latest LTS)
+
+### 🗄️ Databases
+`mongodb-community` · `MongoDB Compass` · `mysql` · `mysql-shell` · `TablePlus`
+
+### 🐳 Containers
+`Docker Desktop` (2GB RAM cap)
+
+### ✏️ Editors
+`Cursor` · `Visual Studio Code` · `Google Antigravity`
+
+**VS Code Extensions:** `vscode-eslint` · `prettier-vscode` · `vscode-tailwindcss` · `ms-python` · `jupyter` · `gitlens` · `auto-rename-tag` · `material-icon-theme` · `material-theme`
+
+### 🤖 Agentic Coding
+`OpenClaw` (or `Open Interpreter` fallback)
+
+### 🎯 Productivity Apps
+`Notion` · `Spotify` · `Discord` · `Brave Browser` · `Google Chrome` · `Raycast` · `Rectangle` · `HiddenBar` · `Stremio` · `Roblox`
 
 ---
 
@@ -127,7 +179,8 @@ dev-setup/
 ├── experiments/           # Hackathon prototypes
 ├── archive/               # Old projects
 ├── .data/
-│   └── mongodb/           # Manual MongoDB data directory
+│   ├── mongodb/           # Manual MongoDB data directory
+│   └── mysql/             # Reference — MySQL data managed by brew
 ├── .envs/
 │   └── .env.template      # Shared secrets template
 └── .templates/
@@ -190,6 +243,10 @@ mongoup        Start MongoDB (dbpath)
 mongodown      Stop MongoDB (dbpath shutdown)
 start-mongo    Start MongoDB (config file)
 stop-mongo     pkill mongod — fast kill
+mysqlup        Start MySQL server
+mysqldown      Stop MySQL server
+mysqlstatus    Check MySQL status
+mysqlroot      Connect to MySQL as root (-u root -p)
 ollamaup       Start Ollama server
 dstats         docker stats --no-stream
 
@@ -228,6 +285,8 @@ Both produce the same `conda activate ai` environment with identical AI/ML libra
 | Spring Boot app (Java) | < 5.5 GB |
 | .NET WebAPI | < 5 GB |
 | Ollama phi3:mini + Node | < 6 GB |
+| MySQL + Node | < 5.5 GB |
+| MongoDB + MySQL (both running) | < 6 GB |
 | Docker active (2GB cap) | < 7.5 GB |
 | ⚠️ Swap territory | > 7.5 GB |
 
@@ -250,9 +309,9 @@ Both produce the same `conda activate ai` environment with identical AI/ML libra
 | 8 | Verify .NET | `dotnet --version` · `dotnet new webapi -n MyApi` |
 | 9 | Start Tomcat (JSP) | `catalina run` → `http://localhost:8080` |
 | 10 | Activate AI environment | `conda activate ai` |
+| 11 | First-time MySQL setup | `mysqlup` → `mysql_secure_installation` → `mysqlroot` |
 
 Verify PyTorch Metal (MPS) is working:
-
 ```bash
 python3 -c "import torch; print('MPS:', torch.backends.mps.is_available())"
 ```
@@ -264,6 +323,8 @@ python3 -c "import torch; print('MPS:', torch.backends.mps.is_available())"
 - MacBook with Apple Silicon (M1 / M2 / M3 / M4)
 - macOS Ventura 13+
 - Internet connection
-- ~35 GB free disk space (Java + .NET add ~2GB on top of base stack)
+- ~35 GB free disk space (Java + .NET + MySQL add ~2.5GB on top of base stack)
 
 ---
+
+*Built for MAC with Apple Silicon Chips — every decision intentional.*

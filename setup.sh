@@ -2,6 +2,8 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║                    Engineering Workstation Setup                 ║
 # ║              Minimal · Intentional · Production-Ready            ║
+# ║                                                                  ║
+# ║  Merged: Claude + ChatGPT + Gemini + Your additions             ║
 # ╚══════════════════════════════════════════════════════════════════╝
 # Usage: chmod +x setup.sh && ./setup.sh
 
@@ -170,7 +172,7 @@ show_menu() {
   clear
   echo ""
   echo -e "${BOLD}${CYAN}  Installation Menu${RESET}"
-  echo -e "${DIM}  ✔ = done  ○ = pending  |  [A] All  [Q] Quit  [01-18] Jump${RESET}"
+  echo -e "${DIM}  ✔ = done  ○ = pending  |  [A] All  [Q] Quit  [01-19] Jump${RESET}"
   echo ""
 
   local sections=(
@@ -192,6 +194,7 @@ show_menu() {
     "cleanup"   "16 · Brew Cleanup + System Tidy"
     "javanet"   "17 · Java + .NET + JSP Tools (Maven, Gradle, Tomcat)"
     "openclaw"  "18 · OpenClaw — Free Claude Code Alternative"
+    "mysql"     "19 · MySQL (manual-start only) + TablePlus"
   )
 
   for (( i=0; i<${#sections[@]}; i+=2 )); do
@@ -1052,6 +1055,14 @@ alias ollamaup="ollama serve"
 alias dstats="docker stats --no-stream"
 
 # ─────────────────────────────────────────────────
+# ALIASES — MySQL (manual-start only)
+# ─────────────────────────────────────────────────
+alias mysqlup="mysql.server start"
+alias mysqldown="mysql.server stop"
+alias mysqlstatus="mysql.server status"
+alias mysqlroot="mysql -u root -p"
+
+# ─────────────────────────────────────────────────
 # ALIASES — System Maintenance
 # ─────────────────────────────────────────────────
 alias cleanup="rm -rf ~/Library/Developer/Xcode/DerivedData/* && npm cache clean --force && echo '✔ Cleaned'"
@@ -1307,6 +1318,82 @@ install_openclaw() {
 }
 
 # ─────────────────────────────────────────────────
+# 19 · MYSQL
+# Manual-start only — same discipline as MongoDB
+# ─────────────────────────────────────────────────
+install_mysql() {
+  log_header "19 · MySQL (Manual-Only Policy)"
+  is_done "mysql" && { log_skip "Already installed"; return; }
+
+  echo ""
+  echo -e "${DIM}  MySQL is installed but NOT started as a service."
+  echo -e "  Use aliases: mysqlup / mysqldown / mysqlstatus / mysqlroot${RESET}"
+  echo ""
+
+  # ── MySQL Server ──
+  if brew list mysql &>/dev/null; then
+    log_success "MySQL already installed: $(mysql --version 2>/dev/null)"
+  else
+    if confirm "Install MySQL?"; then
+      run_quiet "Installing MySQL" brew install mysql
+      log_success "MySQL installed"
+
+      # Explicitly stop any auto-started instance
+      brew services stop mysql &>/dev/null || true
+      log_info "  MySQL stopped — will NOT auto-start on boot"
+      log_info "  Aliases: mysqlup · mysqldown · mysqlstatus · mysqlroot"
+
+      echo ""
+      log_step "Securing MySQL installation..."
+      echo -e "${YELLOW}  ⚠  Run this manually after first start:${RESET}"
+      echo -e "  ${BOLD}mysqlup && mysql_secure_installation${RESET}"
+      echo -e "${DIM}  This sets the root password and removes anonymous users.${RESET}"
+    fi
+  fi
+
+  # ── MySQL Shell (optional) ──
+  if brew list mysql-shell &>/dev/null; then
+    log_success "MySQL Shell already installed"
+  else
+    if confirm "Install MySQL Shell (mysqlsh — advanced CLI client)?"; then
+      run_quiet "Installing MySQL Shell" brew install mysql-shell
+    fi
+  fi
+
+  # ── TablePlus — GUI client for MySQL, PostgreSQL, SQLite, Redis ──
+  echo ""
+  echo -e "${DIM}  TablePlus is a clean, fast GUI client that works with MySQL,"
+  echo -e "  PostgreSQL, SQLite, Redis, and MongoDB — one tool for all DBs.${RESET}"
+  echo ""
+  if brew list --cask tableplus &>/dev/null; then
+    log_success "TablePlus already installed"
+  else
+    if confirm "Install TablePlus (GUI for MySQL + all databases)?"; then
+      run_quiet "Installing TablePlus" brew install --cask tableplus
+      log_success "TablePlus installed"
+      log_info "  Add a connection: Open TablePlus → + → MySQL → localhost:3306"
+    fi
+  fi
+
+  # ── Quick verification ──
+  echo ""
+  log_step "Environment check..."
+  command -v mysql     &>/dev/null && log_success "  mysql      $(mysql --version 2>/dev/null | awk '{print $3, $4}' | tr -d ',')"
+  command -v mysqlsh   &>/dev/null && log_success "  mysqlsh    installed"
+  brew list --cask tableplus &>/dev/null && log_success "  TablePlus  installed"
+
+  echo ""
+  log_warn "First-time setup after install:"
+  log_info "  1. mysqlup                    — start MySQL"
+  log_info "  2. mysql_secure_installation  — set root password, remove anonymous users"
+  log_info "  3. mysqlroot                  — connect as root"
+  log_info "  4. CREATE DATABASE mydb;      — create your first database"
+
+  mark_done "mysql"
+  section_done
+}
+
+# ─────────────────────────────────────────────────
 # SUMMARY SCREEN
 # ─────────────────────────────────────────────────
 show_summary() {
@@ -1339,6 +1426,7 @@ show_summary() {
     "cleanup|Brew Cleanup + System Tidy"
     "javanet|Java 21 + Maven + Gradle + Tomcat + .NET SDK"
     "openclaw|OpenClaw — Free Claude Code Alternative"
+    "mysql|MySQL (manual-start) + TablePlus"
   )
 
   for entry in "${sections[@]}"; do
@@ -1364,6 +1452,7 @@ show_summary() {
   echo "  8.  .NET: dotnet --version · dotnet new webapi -n MyApi"
   echo "  9.  JSP: catalina run → http://localhost:8080"
   echo "  10. Expo: npx create-expo-app@latest MyApp → npx expo start"
+  echo "  11. MySQL: mysqlup → mysqlroot → create databases"
   echo -e "${RESET}"
 
   echo -e "${BOLD}  Full alias list:${RESET}"
@@ -1373,8 +1462,11 @@ show_summary() {
   echo -e "  ${CYAN}exs / exa / exi${RESET}  Expo start / android / ios"
   echo -e "  ${CYAN}dn / dnr / dnb${RESET}   dotnet / run / build"
   echo -e "  ${CYAN}mvnw / gw${RESET}   Maven/Gradle wrapper shortcuts"
-  echo -e "  ${CYAN}mongoup${RESET}     Start MongoDB (path-based)"
-  echo -e "  ${CYAN}stop-mongo${RESET}  Kill MongoDB (pkill)"
+  echo -e "  ${CYAN}mongoup${RESET}     Start MongoDB"
+  echo -e "  ${CYAN}stop-mongo${RESET}  Kill MongoDB"
+  echo -e "  ${CYAN}mysqlup${RESET}     Start MySQL"
+  echo -e "  ${CYAN}mysqldown${RESET}   Stop MySQL"
+  echo -e "  ${CYAN}mysqlroot${RESET}   Connect as root"
   echo -e "  ${CYAN}ollamaup${RESET}    Start Ollama LLM server"
   echo -e "  ${CYAN}cleanup${RESET}     Clear Xcode DerivedData + npm cache"
   echo -e "  ${CYAN}l-gpu${RESET}       Monitor GPU/RAM pressure"
@@ -1407,6 +1499,7 @@ install_all() {
   install_cleanup
   install_javanet
   install_openclaw
+  install_mysql
 }
 
 # ─────────────────────────────────────────────────
@@ -1442,6 +1535,7 @@ main() {
       "16") install_cleanup ;;
       "17") install_javanet ;;
       "18") install_openclaw ;;
+      "19") install_mysql ;;
       *)
         log_warn "Unknown option: $MENU_CHOICE"
         sleep 1
