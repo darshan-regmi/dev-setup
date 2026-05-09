@@ -1,209 +1,147 @@
-# ⚡ Engineering Workstation Setup
+# Mac M2 Dev Setup
 
-> Minimal. Intentional. Production-ready.  
-> Full-stack · Mobile · Blockchain · AI · Java · .NET — optimized for Apple Silicon with 8GB RAM.
+> Minimal. Tailored. No bloat.
+> Web + Mobile + Writing — built for Apple Silicon with 8GB RAM and 256GB SSD.
+
+A focused, idempotent installer for a developer who ships **Next.js / React / TypeScript** on the web, **Expo** on mobile, takes notes as a **student**, and writes **poetry** on the side.
 
 ---
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/darshan-regmi/dev-setup.git
+git clone https://github.com/<your-username>/dev-setup.git
 cd dev-setup
 chmod +x setup.sh
 ./setup.sh
 ```
 
-Interactive menu. Choose exactly what to install. Completed steps are never repeated.
+Interactive menu. Pick what you want. Re-run anytime — completed sections are skipped.
 
 ---
 
-## What's Inside
-
-```
-dev-setup/
-├── setup.sh      # Interactive installer — 18 sections
-└── README.md     # You are here
-```
-
----
-
-## Stack
+## What It Installs
 
 | Layer | Tools |
 |---|---|
-| **Shell** | Zsh · Oh My Zsh · Starship · iTerm2 · tmux |
-| **Package Manager** | Homebrew (ARM-native `/opt/homebrew`) |
-| **JavaScript** | NVM · Node LTS · pnpm · yarn · TypeScript |
-| **Python / AI** | Python 3 (brew) · Anaconda or Miniforge · PyTorch MPS · TensorFlow Metal · Transformers · LangChain · OpenAI SDK |
-| **Local LLM** | Ollama · phi3:mini · tinyllama · nomic-embed-text · deepseek-coder:1.3b |
-| **Web** | Next.js · React · Tailwind · Express · Firebase · Hardhat |
-| **Mobile** | Flutter · React Native · **Expo + EAS** · Android Studio · Swift/Xcode |
-| **Java / JSP** | Temurin JDK 21 LTS · Maven · Gradle · Apache Tomcat |
-| **.NET** | .NET SDK (latest LTS) |
-| **Database** | MongoDB (manual-start) · **MySQL (manual-start)** |
-| **Containers** | Docker (2GB RAM hard cap) |
-| **Editors** | Cursor · VS Code · Google Antigravity |
-| **Agentic Coding** | OpenClaw (free Claude Code alternative) |
+| **Foundation** | Xcode CLT · Homebrew (ARM-native) |
+| **CLI** | git · gh · ripgrep · fd · bat · eza · fzf · zoxide · jq · tldr · JetBrains Mono Nerd Font |
+| **Shell** | Starship (fast, no Oh My Zsh slowdown) |
+| **Node** | fnm · Node LTS · pnpm |
+| **Editor** | Cursor (you can still use VS Code; same shortcuts/extensions) |
+| **Terminals** | iTerm2 · Termius (SSH client) |
+| **AI Tools** | Claude Desktop · Claude Code · ChatGPT · Codex |
+| **Mobile** | Watchman · adb (via android-platform-tools) — **no Xcode, no Android Studio** |
+| **Database & API** | Beekeeper Studio · Bruno |
+| **Deploy CLIs** | vercel · netlify-cli · wrangler · eas-cli · supabase · firebase-cli |
+| **Design** | Figma desktop (Canva stays in browser) |
+| **Notes & Research** | Obsidian · Zotero |
+| **Productivity** | Raycast · OrbStack · Arc browser |
+| **Media** | Discord · Spotify · Spicetify · Stremio |
+| **Office** | Microsoft Office (Word/Excel/PowerPoint) · OneDrive |
 
 ---
 
-## Constraints This Respects
+## Why These Choices
 
-- **ARM-native only** — every tool installs to `/opt/homebrew`, no Rosetta
-- **8GB RAM discipline** — MongoDB, Ollama, Docker, and Tomcat never auto-start
-- **256GB storage** — no models over 7B, Miniforge preferred over Anaconda, Docker disk capped at 32GB
-- **No background bloat** — services start manually, stop when done
+This setup is opinionated for the constraints. Every "yes" has a "no" behind it:
+
+- **fnm over nvm**: faster shell startup on M2; written in Rust.
+- **pnpm over npm/yarn**: hardlinks packages across projects. Saves 30-80GB over a year on a 256GB SSD.
+- **Starship, no Oh My Zsh**: OMZ slows shell startup with hundreds of plugins you'll never use. Starship gives you the prompt without the bloat.
+- **No Xcode, no Android Studio**: Expo Go on your physical phone + EAS Build (cloud) covers 90% of mobile dev. Saves ~30GB. Install Xcode the day you actually need a custom dev client.
+- **OrbStack over Docker Desktop**: Docker Desktop hammers 8GB RAM. OrbStack does the same job with a fraction of the memory.
+- **No Rectangle, no Magnet**: macOS 26 Tahoe has mature native window tiling (drag-to-edge, green button menus, Globe+Ctrl+arrows). Third-party tools are redundant now.
+- **No The Unarchiver**: macOS handles .zip natively, dev work rarely involves .rar. Install on demand if you ever hit one.
+- **Arc browser, but be aware**: Arc entered maintenance mode in May 2025 after Atlassian's acquisition of The Browser Company. Still works, still gets Chromium security patches, no new features. Zen Browser (open-source, Firefox-based, similar UI) is the migration path if you want active development.
+- **Termius over OpenSSH-only**: native macOS SSH works, but Termius adds key management, host snippets, and a UI for when you're juggling multiple servers (Render, Cloudflare, etc.).
+- **Two coding agents (Claude Code + Codex)**: they overlap in capability but feel different in practice. Claude Code is stronger at multi-file reasoning across large codebases; Codex is strong at debugging and code analysis. Both via Homebrew casks: clean install, but you run `brew upgrade claude-code codex` periodically (no auto-update). Each requires its own paid account (Claude Pro/Max for Claude Code, ChatGPT Plus or higher for Codex), or an API key.
+- **Two desktop chat apps (Claude + ChatGPT)**: small disk cost, different strengths. ChatGPT has Option+Space global hotkey for quick questions; Claude Desktop has MCP support for connecting to your tools.
+- **Spicetify warning**: customizes Spotify but Spotify auto-updates wipe changes. You'll re-run `spicetify backup apply` after every Spotify update.
+- **Cursor over VS Code**: same shortcuts, same extensions, better AI integration. Free tier is plenty to start.
+- **Bruno over Postman**: free, faster, files stored in your repo (versioned with git), no forced login.
+- **Beekeeper Studio over TablePlus**: TablePlus is freemium (2-tab limit on free tier). Beekeeper Studio is fully free, open source, similar UI quality.
+- **Obsidian over Notion (for drafts)**: local markdown files you own. Keep Notion for your poetry website CMS; draft in Obsidian, publish to Notion.
+
+---
+
+## Constraints Respected
+
+- **Apple Silicon only** — every formula installs to `/opt/homebrew`, no Rosetta
+- **8GB RAM discipline** — no Docker Desktop, no MongoDB/MySQL services running in background, no Android emulator unless you choose to install one later
+- **256GB SSD discipline** — pnpm by default, Xcode/Android Studio skipped, cleanup utilities included
 
 ---
 
 ## How the Script Works
 
-18 sections, all optional and resumable. Completed steps are tracked in `~/.devsetup_state` — re-running the script skips everything already done.
+19 sections, all optional and resumable. Completed steps are tracked in `~/.devsetup_state` — re-run anytime, finished work is skipped.
 
 ```
   ╔══════════════════════════════════════════════════════════╗
-  ║             Engineering Workstation Setup                ║
-  ║        Minimal · Intentional · Production-Ready          ║
+  ║         Mac M2 Dev Setup — Web + Expo + Writing          ║
   ╚══════════════════════════════════════════════════════════╝
 
   Installation Menu
-  ✔ 01 · Homebrew + Core CLI Tools (incl. tmux)
-  ✔ 02 · Zsh + Oh My Zsh + iTerm2
-  ○ 03 · NVM + Node LTS + Global Packages
+  ✔ 01 · Foundation (Xcode CLT + Homebrew)
+  ✔ 02 · Core CLI Tools
+  ○ 03 · Shell Prompt (Starship)
   ...
 
-  [A] Install All    [Q] Quit    [01-18] Jump to section
+  [A] Install All    [R] Reset state    [Q] Quit    [01-19] Jump
 ```
 
 ---
 
 ## All 19 Sections
 
-| # | Section | What Gets Installed |
+| # | Section | Installs |
 |---|---|---|
-| 01 | Homebrew + Core CLI | brew · git · gh · bat · eza · fd · ripgrep · fzf · zoxide · starship · tmux · tldr · JetBrains Mono NF |
-| 02 | Zsh + iTerm2 | Oh My Zsh · zsh-autosuggestions · zsh-syntax-highlighting · zsh-completions |
-| 03 | NVM + Node LTS | nvm (via curl) · Node LTS · pnpm · yarn · typescript · ts-node · firebase-tools |
-| 04 | Python + Conda | brew python · Anaconda or Miniforge (your choice) · full AI/ML stack in `conda ai` env |
-| 05 | Web Dev | Firebase CLI · Hardhat starter project with toolbox |
-| 06 | MongoDB | mongodb-community · manual-start only · MongoDB Compass (optional) |
-| 07 | Docker | Docker Desktop · 2GB RAM cap reminder |
-| 08 | Ollama | phi3:mini · tinyllama · nomic-embed-text · deepseek-coder:1.3b · codellama:7b |
-| 09 | Mobile Dev | Flutter · Android Studio · React Native CLI · Expo CLI · EAS CLI · Watchman |
-| 10 | Editors | Cursor · VS Code + 9 extensions + settings.json · Google Antigravity |
-| 11 | Productivity Apps | Notion · Spotify · Discord · Brave · Chrome · Raycast · Microsoft Office · HiddenBar · Stremio · Roblox |
-| 12 | Git + SSH | Global git config · SSH keygen (ed25519) · clipboard copy · GitHub CLI auth |
-| 13 | Folder Structure | Full `~/Developer/` layout — 20 directories incl. java/ dotnet/ mobile/expo/ |
-| 14 | ~/.zshrc | All aliases + PATH exports for every tool in this stack |
-| 15 | Starship Prompt | Prompt with Node · Python · Conda · Java · .NET modules |
-| 16 | Cleanup | brew cleanup · conda clean · npm cache · Xcode DerivedData |
-| 17 | Java + .NET + JSP | Temurin JDK 21 · Apache Maven · Gradle · Apache Tomcat · .NET SDK |
-| 18 | OpenClaw | Free Claude Code alternative — brew → npm → Open Interpreter fallback chain |
-| **19** | **MySQL** | **mysql · mysql-shell (optional) · TablePlus GUI · first-time setup guide** |
+| 01 | Foundation | Xcode CLT · Homebrew |
+| 02 | Core CLI | git · gh · ripgrep · fd · bat · eza · fzf · zoxide · jq · tldr · JetBrains Mono NF |
+| 03 | Shell | Starship + minimal config |
+| 04 | Node | fnm · Node LTS · pnpm |
+| 05 | Git + GitHub | global config · ed25519 SSH key · gh auth |
+| 06 | Editor | Cursor + recommended extensions |
+| 07 | Terminals | iTerm2 · Termius |
+| 08 | AI Tools | Claude Desktop · Claude Code · ChatGPT · Codex (paid accounts required for the CLIs) |
+| 09 | Mobile (Expo path) | watchman · android-platform-tools (adb) |
+| 10 | Database + API | Beekeeper Studio · Bruno |
+| 11 | Deploy CLIs | vercel · netlify-cli · wrangler · eas-cli · supabase · firebase-cli |
+| 12 | Design | Figma |
+| 13 | Notes, Poetry & Research | Obsidian · Zotero |
+| 14 | Productivity | Raycast · OrbStack · Arc browser |
+| 15 | Media & Communication | Discord · Spotify · Spicetify · Stremio |
+| 16 | Office + OneDrive | Microsoft Office suite · OneDrive |
+| 17 | Folders | `~/Developer/` and `~/Writing/` structure + `.env.template` |
+| 18 | Aliases | aliases appended to `~/.zshrc` |
+| 19 | Cleanup | brew cleanup · pnpm store prune · npm cache · disk report |
 
 ---
 
-## Everything This Script Can Install
-
-A complete flat list — every tool, app, and package across all 19 sections.
-
-### 🔧 CLI & Shell
-`brew` · `git` · `gh` · `wget` · `curl` · `jq` · `tree` · `htop` · `bat` · `eza` · `fd` · `ripgrep` · `fzf` · `zoxide` · `starship` · `tmux` · `tldr` · `JetBrains Mono Nerd Font`
-
-### 🐚 Terminal
-`iTerm2` · `Oh My Zsh` · `zsh-autosuggestions` · `zsh-syntax-highlighting` · `zsh-completions`
-
-### 🟢 JavaScript / Node
-`nvm` · `Node LTS` · `npm` · `pnpm` · `yarn` · `typescript` · `ts-node` · `firebase-tools`
-
-### 🐍 Python / AI
-`python@3.12` (brew) · `Anaconda` or `Miniforge` · `torch` · `torchvision` · `torchaudio` · `tensorflow-metal` · `tensorflow-macos` · `transformers` · `datasets` · `accelerate` · `langchain` · `langchain-community` · `langchain-openai` · `openai` · `anthropic` · `jupyterlab` · `notebook` · `ipywidgets` · `pandas` · `numpy` · `scipy` · `matplotlib` · `seaborn` · `scikit-learn` · `huggingface_hub` · `python-dotenv`
-
-### 🤖 Local LLMs (Ollama)
-`ollama` · `phi3:mini` · `tinyllama` · `nomic-embed-text` · `deepseek-coder:1.3b` · `codellama:7b`
-
-### 🌐 Web Dev
-`firebase-tools` · `hardhat` · `@nomicfoundation/hardhat-toolbox`
-
-### 📱 Mobile Dev
-`Flutter` · `Android Studio` · `react-native-cli` · `@expo/cli` · `eas-cli` · `watchman`
-
-### ☕ Java / JSP / Enterprise
-`temurin@21` (OpenJDK) · `maven` · `gradle` · `tomcat`
-
-### 💜 .NET
-`.NET SDK` (latest LTS)
-
-### 🗄️ Databases
-`mongodb-community` · `MongoDB Compass` · `mysql` · `mysql-shell` · `TablePlus`
-
-### 🐳 Containers
-`Docker Desktop` (2GB RAM cap)
-
-### ✏️ Editors
-`Cursor` · `Visual Studio Code` · `Google Antigravity`
-
-**VS Code Extensions:** `vscode-eslint` · `prettier-vscode` · `vscode-tailwindcss` · `ms-python` · `jupyter` · `gitlens` · `auto-rename-tag` · `material-icon-theme` · `material-theme`
-
-### 🤖 Agentic Coding
-`OpenClaw` (or `Open Interpreter` fallback)
-
-### 🎯 Productivity Apps
-`Notion` · `Spotify` · `Discord` · `Brave Browser` · `Google Chrome` · `Raycast` · `Rectangle` · `HiddenBar` · `Stremio` · `Roblox`
-
----
-
-## Developer Folder Structure
+## Folder Structure
 
 ```
 ~/Developer/
 ├── web/
-│   ├── next/              # Next.js apps
-│   └── express/           # Express APIs
+│   ├── next/              # Next.js + TS apps
+│   └── express/           # Node/Express APIs
 ├── mobile/
-│   ├── flutter/
-│   ├── react-native/
-│   ├── expo/              # Expo managed workflow
-│   └── swift/
-├── blockchain/            # Hardhat, Solidity
-├── ai/                    # Python ML, LangChain, notebooks
-├── java/                  # Spring Boot, JSP, Maven/Gradle projects
-├── dotnet/                # .NET Web APIs, C# projects
+│   └── expo/              # React Native + Expo
 ├── scripts/               # Automation
-├── creative/              # Writing, AI poetry
-├── labs/                  # R&D, experiments
+├── labs/                  # Experiments
 ├── work/                  # Client / job projects
-├── university/            # Coursework, notebooks
-├── ops/                   # DevOps, infra
-├── experiments/           # Hackathon prototypes
+├── university/            # Coursework
 ├── archive/               # Old projects
-├── .data/
-│   ├── mongodb/           # Manual MongoDB data directory
-│   └── mysql/             # Reference — MySQL data managed by brew
-├── .envs/
-│   └── .env.template      # Shared secrets template
-└── .templates/
-    └── docker-compose.yml
-```
+└── .envs/
+    └── .env.template      # Shared env keys (Supabase, Firebase, Notion, etc.)
 
----
-
-## Ollama Models
-
-| Model | Size | Use Case |
-|---|---|---|
-| `phi3:mini` | 2.3 GB | Daily driver — reasoning, chat, LangChain |
-| `tinyllama` | 0.6 GB | Ultra-fast prototyping |
-| `nomic-embed-text` | 0.3 GB | Embeddings, RAG pipelines |
-| `deepseek-coder:1.3b` | 0.8 GB | Lightweight code assistant |
-| `codellama:7b` | 4.8 GB | Full code model — run alone only |
-
-```bash
-ollamaup                         # start server (use alias)
-ollama run phi3:mini             # chat
-ollama run deepseek-coder:1.3b   # code help
-ollama ps                        # check what's loaded in memory
+~/Writing/
+├── poetry/
+│   ├── drafts/            # Work-in-progress poems (markdown)
+│   └── published/         # Poems shipped to your Notion CMS
+├── notes/                 # Student notes
+└── essays/                # Long-form writing
 ```
 
 ---
@@ -211,68 +149,74 @@ ollama ps                        # check what's loaded in memory
 ## Key Aliases
 
 ```bash
-# ── Navigation ─────────────────────────────────────
+# Navigation
 dev            cd ~/Developer
+write          cd ~/Writing
 ll             eza -la --icons --git
+lt             eza --tree --level=2 --icons
 
-# ── Node ───────────────────────────────────────────
-nrd            npm run dev
-ni             npm install
-nrb            npm run build
+# Git
+gs             git status
+gc             git commit -m
+gp             git push
+gl             git pull
 
-# ── Expo ───────────────────────────────────────────
-exs            npx expo start
-exa            npx expo start --android
-exi            npx expo start --ios
+# pnpm
+pn             pnpm
+pnd            pnpm dev
+pnb            pnpm build
+pni            pnpm install
+
+# Expo
+exs            pnpm expo start
+exa            pnpm expo start --android
+exi            pnpm expo start --ios
 exb            eas build --platform all
 
-# ── Java ───────────────────────────────────────────
-jv             java -version
-mvnw           ./mvnw   (Maven wrapper)
-gw             ./gradlew (Gradle wrapper)
+# Disk hygiene
+dud            du -sh * | sort -h
+clean-node     remove node_modules in current tree
+clean-pnpm     pnpm store prune
+clean-expo     clear Expo cache
+clean-derived  clear Xcode DerivedData
+clean-all      run all cleanups + brew cleanup
 
-# ── .NET ───────────────────────────────────────────
-dn             dotnet
-dnr            dotnet run
-dnb            dotnet build
-dnt            dotnet test
-dnn            dotnet new
-
-# ── Services (start manually, stop when done) ──────
-mongoup        Start MongoDB (dbpath)
-mongodown      Stop MongoDB (dbpath shutdown)
-start-mongo    Start MongoDB (config file)
-stop-mongo     pkill mongod — fast kill
-mysqlup        Start MySQL server
-mysqldown      Stop MySQL server
-mysqlstatus    Check MySQL status
-mysqlroot      Connect to MySQL as root (-u root -p)
-ollamaup       Start Ollama server
-dstats         docker stats --no-stream
-
-# ── System Maintenance ─────────────────────────────
-cleanup        Clear Xcode DerivedData + npm cache
-l-gpu          Real-time GPU/RAM pressure monitor
-memcheck       Swap usage + memory pressure
-
-# ── Shell ──────────────────────────────────────────
-zconf          Edit ~/.zshrc in Cursor
-zreload        Reload shell config
-ip             Get local IP address
+# Shell
+zconf          edit .zshrc in Cursor
+zreload        source ~/.zshrc
 ```
 
 ---
 
-## Conda: Anaconda vs Miniforge
+## Mobile Dev Workflow (No SDKs Required)
 
-| | Anaconda | Miniforge |
-|---|---|---|
-| Install size | ~3 GB | ~200 MB |
-| ARM-native | ✔ | ✔ |
-| Automation | Via brew (large) | `brew install --cask miniforge` |
-| **Recommended** | | **✔** |
+You have:
+- **Nothing Phone 3a** (Android, primary daily driver)
+- **iPhone XR** (iOS test device)
 
-Both produce the same `conda activate ai` environment with identical AI/ML libraries installed.
+The setup uses both phones as your dev fleet:
+
+```
+Cursor on Mac  →  pnpm start  →  Expo dev server
+                                       │
+                          ┌────────────┴────────────┐
+                          ↓                         ↓
+                 Expo Go on Nothing       Expo Go on iPhone XR
+                       (Android)                   (iOS)
+                          │                         │
+                          └─────────  WiFi  ────────┘
+```
+
+**Production builds** go through EAS (cloud):
+
+```bash
+eas build --profile preview --platform all
+# Get download links by email
+# Android: install APK directly on Nothing
+# iOS: install via TestFlight on iPhone XR
+```
+
+You touch Xcode and Android Studio **only** when you need a custom dev client (rare for typical apps). Until then, you save 25-30GB on disk.
 
 ---
 
@@ -280,51 +224,70 @@ Both produce the same `conda activate ai` environment with identical AI/ML libra
 
 | State | Expected RAM |
 |---|---|
-| Idle desktop | < 3 GB |
-| Next.js dev server | < 5 GB |
-| Spring Boot app (Java) | < 5.5 GB |
-| .NET WebAPI | < 5 GB |
-| Ollama phi3:mini + Node | < 6 GB |
-| MySQL + Node | < 5.5 GB |
-| MongoDB + MySQL (both running) | < 6 GB |
-| Docker active (2GB cap) | < 7.5 GB |
-| ⚠️ Swap territory | > 7.5 GB |
+| Idle | < 3 GB |
+| Cursor + Next.js dev server | < 5 GB |
+| Cursor + Expo dev server + Expo Go on phone | < 5 GB |
+| Cursor + Next.js + Bruno + Beekeeper + Figma | < 7 GB |
+| ⚠️ Add Chrome with 30 tabs | swap territory |
 
-**Never run simultaneously:** `codellama:7b` + Docker + Android Emulator + Tomcat.  
-**Monitor:** `memcheck` (swap check) · `l-gpu` (live RAM pressure)
+**Survival rule**: close Chrome tabs, not your dev server.
+**Monitor**: `memcheck` (alias) for swap pressure.
 
 ---
 
 ## After Running the Script
 
-| # | Action | Where |
-|---|---|---|
-| 1 | Restart iTerm2 | or run `source ~/.zshrc` |
-| 2 | Set Docker RAM to 2GB | Docker Desktop → Settings → Resources → Memory |
-| 3 | Add SSH key | Clipboard is ready → `github.com/settings/keys` |
-| 4 | Install Android SDK | Android Studio → SDK Manager → Android 14 (API 34) |
-| 5 | Finish Flutter setup | `flutter doctor` |
-| 6 | Create your first Expo app | `npx create-expo-app@latest MyApp` |
-| 7 | Verify Java | `java -version` · `mvn -v` |
-| 8 | Verify .NET | `dotnet --version` · `dotnet new webapi -n MyApi` |
-| 9 | Start Tomcat (JSP) | `catalina run` → `http://localhost:8080` |
-| 10 | Activate AI environment | `conda activate ai` |
-| 11 | First-time MySQL setup | `mysqlup` → `mysql_secure_installation` → `mysqlroot` |
-
-Verify PyTorch Metal (MPS) is working:
-```bash
-python3 -c "import torch; print('MPS:', torch.backends.mps.is_available())"
-```
+| # | Action |
+|---|---|
+| 1 | Restart your terminal (or `source ~/.zshrc`) |
+| 2 | `gh auth login` — sign in to GitHub CLI |
+| 3 | `vercel login` · `netlify login` · `wrangler login` · `eas login` · `supabase login` · `firebase login` |
+| 4 | Open Cursor, sign in, install recommended extensions (commands printed during install) |
+| 5 | Open Claude Desktop, ChatGPT, Claude Code, and Codex; sign in to each (paid accounts needed for the CLIs). Verify with `claude doctor` and `codex --version`. |
+| 6 | Sign in to Microsoft Office (use your school account if your university provides Microsoft 365 free) |
+| 7 | Open OneDrive, choose folders to sync — **avoid `~/Developer/` to skip syncing `node_modules`** |
+| 8 | Launch Spotify once to initialize its data folders, quit it, then run `spicetify backup apply` |
+| 9 | Open Obsidian → create vault at `~/Writing/vault` |
+| 10 | Open Zotero → install the browser connector for Arc: https://www.zotero.org/download/connectors |
+| 11 | Open Beekeeper Studio → connect your Supabase Postgres (Settings → Database → connection string) |
+| 12 | Test Expo end-to-end:<br>`pnpm dlx create-expo-app test-app && cd test-app && pnpm start`<br>Scan QR with Expo Go on your Nothing Phone and iPhone XR |
+| 13 | (Optional) Create dotfiles repo: `cd ~ && git init dotfiles` |
 
 ---
 
 ## Requirements
 
 - MacBook with Apple Silicon (M1 / M2 / M3 / M4)
-- macOS Ventura 13+
+- macOS Ventura 13 or newer (macOS 26 Tahoe recommended)
 - Internet connection
-- ~35 GB free disk space (Java + .NET + MySQL add ~2.5GB on top of base stack)
+- ~15 GB free disk space for the full install (Office alone is ~3GB; skip section 16 to halve this)
+- Paid Claude account (Pro/Max) for Claude Code, paid ChatGPT account (Plus or higher) for Codex; everything else works without paid accounts
 
 ---
 
-*Built for MAC with Apple Silicon Chips — every decision intentional.*
+## What's Deliberately Excluded
+
+These were in the old script and are **gone for good reason**:
+
+- **Java / .NET / Tomcat** — not in your stack
+- **MongoDB / MySQL** — you use Postgres via Supabase
+- **Anaconda + full Python AI stack** — too heavy for 8GB; install per-project with `uv` or `pyenv` if needed
+- **Ollama + multiple LLMs** — 7B models alone push your RAM into swap; use cloud LLMs (Claude Code does this for you)
+- **Hardhat / Solidity** — not in your stack
+- **Flutter** — you chose React Native + Expo
+- **Android Studio + Xcode** — Expo Go + EAS Build replaces both for 90% of mobile dev
+- **Docker Desktop** — OrbStack does the same job, half the RAM
+- **Oh My Zsh** — measurable shell startup slowdown; Starship alone is enough
+- **Rectangle / Magnet** — macOS 26 Tahoe has native window tiling now
+- **The Unarchiver** — macOS handles .zip natively; install on demand for .rar
+- **Roblox** — not a dev tool
+
+If you ever need any of the above, install on demand. Don't carry them by default.
+
+---
+
+## License
+
+MIT — use it, fork it, strip it down further.
+
+*Built for a Mac that has work to do.*
