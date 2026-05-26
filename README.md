@@ -1,293 +1,206 @@
-# Mac M2 Dev Setup
+# Mac Dev Setup
 
-> Minimal. Tailored. No bloat.
-> Web + Mobile + Writing — built for Apple Silicon with 8GB RAM and 256GB SSD.
+> Web (Next.js · Express · Node · Firebase · TS) + Mobile (Expo · React Native · Firebase · TS)
+> Student: Notion · MS Word · iWork
+> Apple Silicon · 8 GB RAM · 245 GB SSD
 
-A focused, idempotent installer for a developer who ships **Next.js / React / TypeScript** on the web, **Expo** on mobile, takes notes as a **student**, and writes **poetry** on the side.
+A flat, sequential installer — one file, runs top to bottom, no menu. Idempotent: re-run anytime, already-installed packages are skipped.
 
 ---
 
 ## Quick Start
 
 ```bash
-git clone https://github.com/<your-username>/dev-setup.git
-cd dev-setup
 chmod +x setup.sh
 ./setup.sh
 ```
 
-Interactive menu. Pick what you want. Re-run anytime — completed sections are skipped.
+Runs sequentially. Idempotent — re-run anytime; already-installed packages are skipped automatically.
 
 ---
 
-## What It Installs
+## What Gets Installed
 
-| Layer | Tools |
-|---|---|
-| **Foundation** | Xcode CLT · Homebrew (ARM-native) |
-| **CLI** | git · gh · ripgrep · fd · bat · eza · fzf · zoxide · jq · tldr · JetBrains Mono Nerd Font |
-| **Shell** | Starship (fast, no Oh My Zsh slowdown) |
-| **Node** | fnm · Node LTS · pnpm |
-| **Editor** | Cursor (you can still use VS Code; same shortcuts/extensions) |
-| **Terminals** | iTerm2 · Termius (SSH client) |
-| **AI Tools** | Claude Desktop · Claude Code · ChatGPT · Codex |
-| **Mobile** | Watchman · adb (via android-platform-tools) — **no Xcode, no Android Studio** |
-| **Database & API** | Beekeeper Studio · Bruno |
-| **Deploy CLIs** | vercel · netlify-cli · wrangler · eas-cli · supabase · firebase-cli |
-| **Design** | Figma desktop (Canva stays in browser) |
-| **Notes & Research** | Obsidian · Zotero |
-| **Productivity** | Raycast · OrbStack · Arc browser |
-| **Media** | Discord · Spotify · Spicetify · Stremio |
-| **Office** | Microsoft Office (Word/Excel/PowerPoint) · OneDrive |
+| Layer                | Tools                                                                                                      |
+| -------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Foundation**       | Xcode CLT · Homebrew                                                                                       |
+| **CLI + Shell**      | git · gh · ripgrep · fd · bat · eza · fzf · zoxide · jq · tldr · starship · mas · JetBrains Mono Nerd Font |
+| **Node**             | fnm · Node LTS · **pnpm**                                                                                  |
+| **Editors**          | **Cursor + VS Code** (both)                                                                                |
+| **Terminal**         | iTerm2                                                                                                     |
+| **AI Tools**         | Claude Desktop · Claude Code · **ChatGPT Desktop** (no Codex CLI)                                          |
+| **Mobile (Expo)**    | watchman · android-platform-tools (adb) — no Xcode, no Android Studio                                      |
+| **Databases**        | **PostgreSQL 17** (for Prisma) + **MySQL**                                                                 |
+| **DB GUI + API**     | Beekeeper Studio · Bruno                                                                                   |
+| **Deploy CLIs**      | vercel · **wrangler** · eas-cli · firebase-cli                                                             |
+| **Design**           | Figma                                                                                                      |
+| **Notes + Research** | Notion · Obsidian · Zotero                                                                                 |
+| **Productivity**     | Raycast · OrbStack · Arc                                                                                   |
+| **Media**            | Discord · Spotify · Spicetify (curl installer) · Stremio                                                   |
+| **Docs**             | MS Word · Apple Pages · Keynote · Numbers (via `mas`)                                                      |
+| **Cloud Drives**     | OneDrive · Google Drive                                                                                    |
 
 ---
 
 ## Why These Choices
 
-This setup is opinionated for the constraints. Every "yes" has a "no" behind it:
-
-- **fnm over nvm**: faster shell startup on M2; written in Rust.
-- **pnpm over npm/yarn**: hardlinks packages across projects. Saves 30-80GB over a year on a 256GB SSD.
-- **Starship, no Oh My Zsh**: OMZ slows shell startup with hundreds of plugins you'll never use. Starship gives you the prompt without the bloat.
-- **No Xcode, no Android Studio**: Expo Go on your physical phone + EAS Build (cloud) covers 90% of mobile dev. Saves ~30GB. Install Xcode the day you actually need a custom dev client.
-- **OrbStack over Docker Desktop**: Docker Desktop hammers 8GB RAM. OrbStack does the same job with a fraction of the memory.
-- **No Rectangle, no Magnet**: macOS 26 Tahoe has mature native window tiling (drag-to-edge, green button menus, Globe+Ctrl+arrows). Third-party tools are redundant now.
-- **No The Unarchiver**: macOS handles .zip natively, dev work rarely involves .rar. Install on demand if you ever hit one.
-- **Arc browser, but be aware**: Arc entered maintenance mode in May 2025 after Atlassian's acquisition of The Browser Company. Still works, still gets Chromium security patches, no new features. Zen Browser (open-source, Firefox-based, similar UI) is the migration path if you want active development.
-- **Termius over OpenSSH-only**: native macOS SSH works, but Termius adds key management, host snippets, and a UI for when you're juggling multiple servers (Render, Cloudflare, etc.).
-- **Two coding agents (Claude Code + Codex)**: they overlap in capability but feel different in practice. Claude Code is stronger at multi-file reasoning across large codebases; Codex is strong at debugging and code analysis. Both via Homebrew casks: clean install, but you run `brew upgrade claude-code codex` periodically (no auto-update). Each requires its own paid account (Claude Pro/Max for Claude Code, ChatGPT Plus or higher for Codex), or an API key.
-- **Two desktop chat apps (Claude + ChatGPT)**: small disk cost, different strengths. ChatGPT has Option+Space global hotkey for quick questions; Claude Desktop has MCP support for connecting to your tools.
-- **Spicetify warning**: customizes Spotify but Spotify auto-updates wipe changes. You'll re-run `spicetify backup apply` after every Spotify update.
-- **Cursor over VS Code**: same shortcuts, same extensions, better AI integration. Free tier is plenty to start.
-- **Bruno over Postman**: free, faster, files stored in your repo (versioned with git), no forced login.
-- **Beekeeper Studio over TablePlus**: TablePlus is freemium (2-tab limit on free tier). Beekeeper Studio is fully free, open source, similar UI quality.
-- **Obsidian over Notion (for drafts)**: local markdown files you own. Keep Notion for your poetry website CMS; draft in Obsidian, publish to Notion.
-
----
-
-## Constraints Respected
-
-- **Apple Silicon only** — every formula installs to `/opt/homebrew`, no Rosetta
-- **8GB RAM discipline** — no Docker Desktop, no MongoDB/MySQL services running in background, no Android emulator unless you choose to install one later
-- **256GB SSD discipline** — pnpm by default, Xcode/Android Studio skipped, cleanup utilities included
-
----
-
-## How the Script Works
-
-19 sections, all optional and resumable. Completed steps are tracked in `~/.devsetup_state` — re-run anytime, finished work is skipped.
-
-```
-  ╔══════════════════════════════════════════════════════════╗
-  ║         Mac M2 Dev Setup — Web + Expo + Writing          ║
-  ╚══════════════════════════════════════════════════════════╝
-
-  Installation Menu
-  ✔ 01 · Foundation (Xcode CLT + Homebrew)
-  ✔ 02 · Core CLI Tools
-  ○ 03 · Shell Prompt (Starship)
-  ...
-
-  [A] Install All    [R] Reset state    [Q] Quit    [01-19] Jump
-```
-
----
-
-## All 19 Sections
-
-| # | Section | Installs |
-|---|---|---|
-| 01 | Foundation | Xcode CLT · Homebrew |
-| 02 | Core CLI | git · gh · ripgrep · fd · bat · eza · fzf · zoxide · jq · tldr · JetBrains Mono NF |
-| 03 | Shell | Starship + minimal config |
-| 04 | Node | fnm · Node LTS · pnpm |
-| 05 | Git + GitHub | global config · ed25519 SSH key · gh auth |
-| 06 | Editor | Cursor + recommended extensions |
-| 07 | Terminals | iTerm2 · Termius |
-| 08 | AI Tools | Claude Desktop · Claude Code · ChatGPT · Codex (paid accounts required for the CLIs) |
-| 09 | Mobile (Expo path) | watchman · android-platform-tools (adb) |
-| 10 | Database + API | Beekeeper Studio · Bruno |
-| 11 | Deploy CLIs | vercel · netlify-cli · wrangler · eas-cli · supabase · firebase-cli |
-| 12 | Design | Figma |
-| 13 | Notes, Poetry & Research | Obsidian · Zotero |
-| 14 | Productivity | Raycast · OrbStack · Arc browser |
-| 15 | Media & Communication | Discord · Spotify · Spicetify · Stremio |
-| 16 | Office + OneDrive | Microsoft Office suite · OneDrive |
-| 17 | Folders | `~/Developer/` and `~/Writing/` structure + `.env.template` |
-| 18 | Aliases | aliases appended to `~/.zshrc` |
-| 19 | Cleanup | brew cleanup · pnpm store prune · npm cache · disk report |
+- **pnpm over npm**: hardlinks across projects — saves 30–80GB/year on a 245GB SSD.
+- **fnm over nvm**: faster shell startup; Rust-native.
+- **PostgreSQL native, not Docker**: lighter on 8GB RAM than a Postgres container.
+- **PostgreSQL + MySQL (both)**: Postgres for Prisma/production work, MySQL for school coursework or legacy projects.
+- **Cursor + VS Code (both)**: same extensions/shortcuts. Cursor for AI-heavy edits, VS Code as the always-stable fallback. Together ~1.5 GB, worth the disk.
+- **Claude Code + Claude Desktop + ChatGPT Desktop (no Codex CLI)**: two AI sources without paying for two CLI subscriptions. ChatGPT free-tier desktop covers occasional questions; Claude Code is your primary coding agent.
+- **Notion + Obsidian + Zotero**: Notion for active study, Obsidian for offline markdown backup, Zotero for citation work.
+- **OrbStack over Docker Desktop**: half the RAM on 8GB.
+- **Starship, no Oh My Zsh**: measurably faster shell startup.
+- **No Termius**: macOS native `ssh` + `~/.ssh/config` is enough; add later if you start managing servers.
+- **No iWork via cask**: installed via `mas` (Mac App Store CLI) because that's where Apple ships them — free with your Apple ID.
 
 ---
 
 ## Folder Structure
 
-```
-~/Developer/
-├── web/
-│   ├── next/              # Next.js + TS apps
-│   └── express/           # Node/Express APIs
-├── mobile/
-│   └── expo/              # React Native + Expo
-├── scripts/               # Automation
-├── labs/                  # Experiments
-├── work/                  # Client / job projects
-├── university/            # Coursework
-├── archive/               # Old projects
-└── .envs/
-    └── .env.template      # Shared env keys (Supabase, Firebase, Notion, etc.)
+Flat. Two top-level project roots.
 
-~/Writing/
-├── poetry/
-│   ├── drafts/            # Work-in-progress poems (markdown)
-│   └── published/         # Poems shipped to your Notion CMS
-├── notes/                 # Student notes
-└── essays/                # Long-form writing
 ```
+~/Developer/    # all coding projects (web · mobile · scripts · experiments)
+~/University/   # coursework · notes · papers
+```
+
+Notion holds active notes; the filesystem holds your code. Obsidian vault location is your call.
 
 ---
 
-## Key Aliases
+## Aliases (cheat sheet)
 
 ```bash
 # Navigation
 dev            cd ~/Developer
-write          cd ~/Writing
-ll             eza -la --icons --git
-lt             eza --tree --level=2 --icons
+uni            cd ~/University
+..  ...        cd .. / cd ../..
 
-# Git
-gs             git status
-gc             git commit -m
-gp             git push
-gl             git pull
+# Better defaults
+ls / ll        eza (icons + git)
+cat            bat
+find           fd
 
-# pnpm
+# pnpm — Next.js / Express / Node
 pn             pnpm
+pni / pnid     pnpm install / pnpm add -D
+pnr            pnpm run
 pnd            pnpm dev
 pnb            pnpm build
-pni            pnpm install
+pns            pnpm start
+pnt            pnpm test
+
+# Prisma
+px / pxg / pxm / pxs       npx prisma { · generate · migrate dev · studio }
+
+# PostgreSQL
+pgup           brew services start postgresql@17
+pgdown         brew services stop postgresql@17
+pgstatus       brew services info postgresql@17
+psqlroot       psql postgres
+
+# MySQL
+mysqlup        mysql.server start
+mysqldown      mysql.server stop
+mysqlstatus    mysql.server status
+mysqlroot      mysql -u root -p
 
 # Expo
-exs            pnpm expo start
-exa            pnpm expo start --android
-exi            pnpm expo start --ios
-exb            eas build --platform all
+exs / exa / exi   pnpm expo start { · --android · --ios }
+exb               eas build --platform all
 
-# Disk hygiene
-dud            du -sh * | sort -h
-clean-node     remove node_modules in current tree
-clean-pnpm     pnpm store prune
-clean-expo     clear Expo cache
-clean-derived  clear Xcode DerivedData
-clean-all      run all cleanups + brew cleanup
+# Firebase
+fbd / fbe / fbl   firebase deploy / emulators:start / login
 
-# Shell
-zconf          edit .zshrc in Cursor
-zreload        source ~/.zshrc
+# Git
+gs / gco / gp / gl / gb / gd / glog
+gcp "msg"      add + commit + push current branch
+gundo          undo last commit (keep staged)
+gsync          merge origin/main into current branch
+git-branch     interactive branch manager (switch / create / delete / rename)
+
+# System
+ip · ports · memcheck · cleanup · zconf · zreload
+
+# Functions
+serve [port]   quick http server (default 3000)
+myip           local + public IP
+mkcd <dir>     mkdir -p + cd
+port <n>       kill process on port n
 ```
 
 ---
 
-## Mobile Dev Workflow (No SDKs Required)
-
-You have:
-- **Nothing Phone 3a** (Android, primary daily driver)
-- **iPhone XR** (iOS test device)
-
-The setup uses both phones as your dev fleet:
-
-```
-Cursor on Mac  →  pnpm start  →  Expo dev server
-                                       │
-                          ┌────────────┴────────────┐
-                          ↓                         ↓
-                 Expo Go on Nothing       Expo Go on iPhone XR
-                       (Android)                   (iOS)
-                          │                         │
-                          └─────────  WiFi  ────────┘
-```
-
-**Production builds** go through EAS (cloud):
+## After Running
 
 ```bash
-eas build --profile preview --platform all
-# Get download links by email
-# Android: install APK directly on Nothing
-# iOS: install via TestFlight on iPhone XR
+source ~/.zshrc          # or restart terminal
+gh auth login            # GitHub CLI
+vercel login             # Web deploys (Next.js)
+wrangler login           # Cloudflare Workers
+eas login                # Expo builds
+firebase login           # Firebase
+
+claude doctor            # verify Claude Code
+createdb $USER           # so 'psql' works with no args
+mysql_secure_installation  # MySQL first-time security
+
+# Sign in to GUIs
+# Cursor · VS Code · Claude · ChatGPT · Notion · Obsidian · MS Word · OneDrive · Google Drive
+
+# Spotify + Spicetify
+# 1. open Spotify, sign in, then quit it
+# 2. spicetify backup apply
+# (re-run after every Spotify auto-update)
+
+# Smoke tests
+pnpm dlx create-next-app@latest demo-web --typescript
+cd demo-web && pnd                                  # next dev
+
+cd ~/Developer
+pnpm dlx create-expo-app demo-mobile
+cd demo-mobile && exs                               # scan QR with Expo Go
 ```
 
-You touch Xcode and Android Studio **only** when you need a custom dev client (rare for typical apps). Until then, you save 25-30GB on disk.
+---
+
+## Notes on Versioning
+
+- **PostgreSQL 17**: Homebrew dropped the unversioned `postgresql` formula a while back; you must specify a major version. `postgresql@17` is the latest stable formula. Bump to `@18` (and update the aliases) when it ships.
+- Everything else uses unpinned brew formulae and casks — `brew update && brew upgrade` periodically.
 
 ---
 
-## Memory Guide
+## The `.zshrc` File
 
-| State | Expected RAM |
-|---|---|
-| Idle | < 3 GB |
-| Cursor + Next.js dev server | < 5 GB |
-| Cursor + Expo dev server + Expo Go on phone | < 5 GB |
-| Cursor + Next.js + Bruno + Beekeeper + Figma | < 7 GB |
-| ⚠️ Add Chrome with 30 tabs | swap territory |
+`setup.sh` appends a marked block (`# === V2 SETUP ===` … `# === END V2 SETUP ===`) to your existing `~/.zshrc`. Safe to re-run — duplicate-guarded by the marker.
 
-**Survival rule**: close Chrome tabs, not your dev server.
-**Monitor**: `memcheck` (alias) for swap pressure.
+A standalone reference is included as `.zshrc` at the repo root. Copy it over for a clean shell config (back up your existing one first).
 
 ---
 
-## After Running the Script
+## Approximate Disk Footprint
 
-| # | Action |
-|---|---|
-| 1 | Restart your terminal (or `source ~/.zshrc`) |
-| 2 | `gh auth login` — sign in to GitHub CLI |
-| 3 | `vercel login` · `netlify login` · `wrangler login` · `eas login` · `supabase login` · `firebase login` |
-| 4 | Open Cursor, sign in, install recommended extensions (commands printed during install) |
-| 5 | Open Claude Desktop, ChatGPT, Claude Code, and Codex; sign in to each (paid accounts needed for the CLIs). Verify with `claude doctor` and `codex --version`. |
-| 6 | Sign in to Microsoft Office (use your school account if your university provides Microsoft 365 free) |
-| 7 | Open OneDrive, choose folders to sync — **avoid `~/Developer/` to skip syncing `node_modules`** |
-| 8 | Launch Spotify once to initialize its data folders, quit it, then run `spicetify backup apply` |
-| 9 | Open Obsidian → create vault at `~/Writing/vault` |
-| 10 | Open Zotero → install the browser connector for Arc: https://www.zotero.org/download/connectors |
-| 11 | Open Beekeeper Studio → connect your Supabase Postgres (Settings → Database → connection string) |
-| 12 | Test Expo end-to-end:<br>`pnpm dlx create-expo-app test-app && cd test-app && pnpm start`<br>Scan QR with Expo Go on your Nothing Phone and iPhone XR |
-| 13 | (Optional) Create dotfiles repo: `cd ~ && git init dotfiles` |
+|                                                      |            |
+| ---------------------------------------------------- | ---------- |
+| Homebrew + CLI tools                                 | ~1.5 GB    |
+| Cursor + VS Code + iTerm2 + Raycast                  | ~2.0 GB    |
+| Claude + Claude Code + ChatGPT                       | ~1.2 GB    |
+| Notion + Obsidian + Zotero                           | ~0.8 GB    |
+| MS Word + iWork (Pages/Keynote/Numbers)              | ~1.5 GB    |
+| OneDrive + Google Drive (apps, not synced files)     | ~0.3 GB    |
+| Figma + Arc + Discord + Spotify + Stremio + OrbStack | ~2.0 GB    |
+| PostgreSQL + MySQL + Beekeeper + Bruno               | ~1.0 GB    |
+| Node + global CLIs                                   | ~0.5 GB    |
+| **Total apps**                                       | **~11 GB** |
 
----
-
-## Requirements
-
-- MacBook with Apple Silicon (M1 / M2 / M3 / M4)
-- macOS Ventura 13 or newer (macOS 26 Tahoe recommended)
-- Internet connection
-- ~15 GB free disk space for the full install (Office alone is ~3GB; skip section 16 to halve this)
-- Paid Claude account (Pro/Max) for Claude Code, paid ChatGPT account (Plus or higher) for Codex; everything else works without paid accounts
-
----
-
-## What's Deliberately Excluded
-
-These were in the old script and are **gone for good reason**:
-
-- **Java / .NET / Tomcat** — not in your stack
-- **MongoDB / MySQL** — you use Postgres via Supabase
-- **Anaconda + full Python AI stack** — too heavy for 8GB; install per-project with `uv` or `pyenv` if needed
-- **Ollama + multiple LLMs** — 7B models alone push your RAM into swap; use cloud LLMs (Claude Code does this for you)
-- **Hardhat / Solidity** — not in your stack
-- **Flutter** — you chose React Native + Expo
-- **Android Studio + Xcode** — Expo Go + EAS Build replaces both for 90% of mobile dev
-- **Docker Desktop** — OrbStack does the same job, half the RAM
-- **Oh My Zsh** — measurable shell startup slowdown; Starship alone is enough
-- **Rectangle / Magnet** — macOS 26 Tahoe has native window tiling now
-- **The Unarchiver** — macOS handles .zip natively; install on demand for .rar
-- **Roblox** — not a dev tool
-
-If you ever need any of the above, install on demand. Don't carry them by default.
+Leaves ~230 GB for projects and cloud-synced docs.
 
 ---
 
 ## License
 
-MIT — use it, fork it, strip it down further.
-
-*Built for a Mac that has work to do.*
+MIT.

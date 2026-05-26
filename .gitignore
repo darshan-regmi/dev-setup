@@ -1,3 +1,122 @@
-.qodo/
-.vscode/
+# ──────────────────────────────────────────────────────────────────────
+# macOS
+# ──────────────────────────────────────────────────────────────────────
 .DS_Store
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+.fseventsd
+.DocumentRevisions-V100
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+Icon?
+._*
+
+# ──────────────────────────────────────────────────────────────────────
+# Editors / IDEs
+# ──────────────────────────────────────────────────────────────────────
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Cursor
+.cursor/
+.cursorrules
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Vim / Neovim
+*.swp
+*.swo
+*.swn
+*~
+.netrwhist
+Session.vim
+[._]*.un~
+
+# Emacs
+\#*\#
+.\#*
+*.elc
+
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# ──────────────────────────────────────────────────────────────────────
+# AI / Agent tooling
+# ──────────────────────────────────────────────────────────────────────
+.claude/settings.local.json
+.claude/.credentials*
+.aider*
+.qodo/
+.windsurf/
+.continue/
+
+# ──────────────────────────────────────────────────────────────────────
+# Shell state / local artifacts
+# ──────────────────────────────────────────────────────────────────────
+.zsh_history
+.bash_history
+.zcompdump*
+.shell.pre-oh-my-zsh
+
+# Anything the user might have copied in for local testing
+state/
+*.local
+*.local.*
+
+# ──────────────────────────────────────────────────────────────────────
+# Secrets / env
+# ──────────────────────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+*.crt
+secrets/
+credentials.json
+
+# ──────────────────────────────────────────────────────────────────────
+# Logs / temp
+# ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+tmp/
+temp/
+.cache/
+*.bak
+*.backup
+*.orig
+*.rej
+.tmp.*
+
+# ──────────────────────────────────────────────────────────────────────
+# Archive / bundles
+# ──────────────────────────────────────────────────────────────────────
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+*.rar
+
+# ──────────────────────────────────────────────────────────────────────
+# Per-machine overrides (don't commit local tweaks to setup.sh / .zshrc)
+# ──────────────────────────────────────────────────────────────────────
+setup.local.sh
+.zshrc.local
